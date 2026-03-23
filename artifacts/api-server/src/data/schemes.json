@@ -1,0 +1,74 @@
+[
+  {
+    "id": "1",
+    "name": "PM-KISAN",
+    "nameHindi": "पीएम किसान सम्मान निधि",
+    "description": "Pradhan Mantri Kisan Samman Nidhi provides income support of ₹6,000 per year to all small and marginal farmer families across India.",
+    "descriptionHindi": "प्रधानमंत्री किसान सम्मान निधि योजना के तहत सभी छोटे और सीमांत किसान परिवारों को प्रति वर्ष ₹6,000 की आय सहायता प्रदान की जाती है।",
+    "benefit": "₹6,000 per year (₹2,000 every 4 months)",
+    "eligibility": "All landholding farmer families with cultivable land up to 2 hectares",
+    "applyLink": "https://pmkisan.gov.in",
+    "category": "income",
+    "icon": "💰"
+  },
+  {
+    "id": "2",
+    "name": "Pradhan Mantri Fasal Bima Yojana",
+    "nameHindi": "प्रधानमंत्री फसल बीमा योजना",
+    "description": "Comprehensive crop insurance scheme that provides financial support to farmers suffering crop loss/damage due to unforeseen events like natural calamities, pests, and diseases.",
+    "descriptionHindi": "यह व्यापक फसल बीमा योजना प्राकृतिक आपदाओं, कीटों और बीमारियों जैसी अप्रत्याशित घटनाओं के कारण फसल नुकसान से पीड़ित किसानों को वित्तीय सहायता प्रदान करती है।",
+    "benefit": "Full compensation for crop loss. Premium as low as 2% for Kharif and 1.5% for Rabi crops",
+    "eligibility": "All farmers growing notified crops in notified areas. Compulsory for loanee farmers",
+    "applyLink": "https://pmfby.gov.in",
+    "category": "insurance",
+    "icon": "🛡️"
+  },
+  {
+    "id": "3",
+    "name": "Kisan Credit Card",
+    "nameHindi": "किसान क्रेडिट कार्ड",
+    "description": "Provides farmers with timely and adequate credit support from the banking system for their cultivation and other needs at low interest rates.",
+    "descriptionHindi": "यह योजना किसानों को बैंकिंग प्रणाली से खेती और अन्य जरूरतों के लिए कम ब्याज दरों पर समय पर पर्याप्त ऋण सहायता प्रदान करती है।",
+    "benefit": "Credit up to ₹3 lakh at 4% interest rate per annum (with interest subvention)",
+    "eligibility": "All farmers, sharecroppers, oral lessees, and tenant farmers",
+    "applyLink": "https://www.nabard.org",
+    "category": "credit",
+    "icon": "💳"
+  },
+  {
+    "id": "4",
+    "name": "Soil Health Card Scheme",
+    "nameHindi": "मृदा स्वास्थ्य कार्ड योजना",
+    "description": "Provides farmers with soil health cards carrying crop-wise recommendations of nutrients and fertilizers required for individual farms to help improve productivity.",
+    "descriptionHindi": "किसानों को मृदा स्वास्थ्य कार्ड प्रदान करता है जिसमें उत्पादकता सुधार के लिए फसल-वार पोषक तत्व और उर्वरक सिफारिशें होती हैं।",
+    "benefit": "Free soil testing and nutrient recommendations to reduce fertilizer costs by up to 30%",
+    "eligibility": "All farmers. Soil tested once every 2 years",
+    "applyLink": "https://soilhealth.dac.gov.in",
+    "category": "advisory",
+    "icon": "🌱"
+  },
+  {
+    "id": "5",
+    "name": "PM Krishi Sinchayee Yojana",
+    "nameHindi": "पीएम कृषि सिंचाई योजना",
+    "description": "Aims to enhance water use efficiency, reduce wastage, and increase availability of water for agriculture through the principle of 'More Crop Per Drop'.",
+    "descriptionHindi": "'प्रति बूंद अधिक फसल' के सिद्धांत के माध्यम से जल उपयोग दक्षता बढ़ाने, बर्बादी कम करने और कृषि के लिए जल उपलब्धता बढ़ाने का लक्ष्य रखती है।",
+    "benefit": "55% subsidy on micro-irrigation systems (drip/sprinkler). SC/ST farmers get 45% additional subsidy",
+    "eligibility": "All farmers. Priority to small, marginal and tribal farmers",
+    "applyLink": "https://pmksy.gov.in",
+    "category": "infrastructure",
+    "icon": "💧"
+  },
+  {
+    "id": "6",
+    "name": "eNAM - National Agriculture Market",
+    "nameHindi": "ई-नाम - राष्ट्रीय कृषि बाजार",
+    "description": "An online trading platform for agricultural commodities that networks existing mandis to create a unified national market for agricultural commodities.",
+    "descriptionHindi": "कृषि वस्तुओं के लिए एक ऑनलाइन ट्रेडिंग प्लेटफॉर्म जो मौजूदा मंडियों को जोड़कर कृषि वस्तुओं के लिए एकीकृत राष्ट्रीय बाजार बनाता है।",
+    "benefit": "Better price discovery, reduced transaction costs, access to wider market",
+    "eligibility": "All registered farmers, traders, and FPOs",
+    "applyLink": "https://enam.gov.in",
+    "category": "market",
+    "icon": "🏪"
+  }
+]

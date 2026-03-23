@@ -1,0 +1,20 @@
+packages:
+  "framer-motion": "For page transitions, list animations, and interactive component feedback"
+  "date-fns": "For formatting timestamps on community posts and price updates"
+  "react-hook-form": "For robust form state management in new posts and chat"
+  "@hookform/resolvers": "For Zod schema validation integration with react-hook-form"
+
+images:
+  - path: "artifacts/kisan-connect/public/images/hero-farm.png"
+    description: "A breathtaking, vibrant green agricultural field in India during golden hour sunrise, lush crops, minimalist cinematic lighting, high quality"
+    aspect_ratio: "16:9"
+  - path: "artifacts/kisan-connect/public/images/logo-icon.png"
+    description: "Minimalist, premium 3D icon of a glowing green plant shoot or stylized leaf, simple warm white background"
+    aspect_ratio: "1:1"
+  - path: "artifacts/kisan-connect/public/images/ai-bot.png"
+    description: "Friendly, modern illustrated clean 3D robot mascot wearing a traditional Indian green turban, warm inviting colors"
+    aspect_ratio: "1:1"
+
+notes:
+  - Uses @workspace/api-client-react for generated React Query hooks and Zod schemas.
+  - Dual language support (English + Hindi) implemented via inline labels.

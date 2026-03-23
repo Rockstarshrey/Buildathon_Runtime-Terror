@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1",
+    "author": "Ramesh Kumar",
+    "location": "Muzaffarpur, Bihar",
+    "content": "My wheat crop is showing yellow leaves. What could be the reason? I irrigated well last week.",
+    "contentHindi": "मेरी गेहूं की फसल में पीले पत्ते आ रहे हैं। कारण क्या हो सकता है? मैंने पिछले हफ्ते अच्छी सिंचाई की थी।",
+    "category": "question",
+    "timestamp": "2026-03-23T09:15:00Z",
+    "likes": 12
+  },
+  {
+    "id": "2",
+    "author": "Sunita Devi",
+    "location": "Amritsar, Punjab",
+    "content": "Tip: Spraying neem oil solution once a week greatly reduces pest attacks on tomato plants. Works very well for me!",
+    "contentHindi": "टिप: नीम का तेल घोल सप्ताह में एक बार छिड़कने से टमाटर के पौधों पर कीट का हमला काफी कम हो जाता है।",
+    "category": "tip",
+    "timestamp": "2026-03-22T14:30:00Z",
+    "likes": 45
+  },
+  {
+    "id": "3",
+    "author": "Mahesh Patel",
+    "location": "Nashik, Maharashtra",
+    "content": "Onion prices at Nashik mandi have increased to ₹2800 per quintal today. Farmers should consider selling now.",
+    "contentHindi": "नासिक मंडी में आज प्याज की कीमतें बढ़कर ₹2800 प्रति क्विंटल हो गई हैं। किसानों को अभी बेचने पर विचार करना चाहिए।",
+    "category": "news",
+    "timestamp": "2026-03-23T07:00:00Z",
+    "likes": 89
+  },
+  {
+    "id": "4",
+    "author": "Dharmendra Singh",
+    "location": "Lucknow, Uttar Pradesh",
+    "content": "Heavy rain forecast for next 3 days in eastern UP. Farmers should harvest their rabi crops urgently.",
+    "contentHindi": "पूर्वी यूपी में अगले 3 दिनों के लिए भारी बारिश का पूर्वानुमान है। किसानों को तुरंत रबी फसल काटनी चाहिए।",
+    "category": "weather",
+    "timestamp": "2026-03-22T18:00:00Z",
+    "likes": 134
+  },
+  {
+    "id": "5",
+    "author": "Kavita Sharma",
+    "location": "Jaipur, Rajasthan",
+    "content": "I applied for PM-KISAN and received ₹6000 in my account. The process is very easy — apply at your nearest CSC center!",
+    "contentHindi": "मैंने पीएम-किसान के लिए आवेदन किया और मेरे खाते में ₹6000 मिल गए। प्रक्रिया बहुत आसान है — नजदीकी CSC केंद्र पर आवेदन करें!",
+    "category": "tip",
+    "timestamp": "2026-03-21T11:30:00Z",
+    "likes": 67
+  },
+  {
+    "id": "6",
+    "author": "Baldev Rao",
+    "location": "Warangal, Telangana",
+    "content": "Cotton crop suffering from pink bollworm attack. Which pesticide should I use? Please advise urgently.",
+    "contentHindi": "कपास की फसल गुलाबी सुंडी के हमले से पीड़ित है। कौन सा कीटनाशक इस्तेमाल करूं? कृपया तुरंत सलाह दें।",
+    "category": "question",
+    "timestamp": "2026-03-23T08:45:00Z",
+    "likes": 23
+  }
+]

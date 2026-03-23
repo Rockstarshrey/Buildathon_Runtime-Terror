@@ -1,22 +1,28 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: KisanConnect API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: community
+    description: Community posts
+  - name: prices
+    description: Mandi crop prices
+  - name: schemes
+    description: Government schemes
+  - name: ai
+    description: AI Assistant
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +30,88 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /community/posts:
+    get:
+      operationId: getCommunityPosts
+      tags: [community]
+      summary: Get all community posts
+      responses:
+        "200":
+          description: List of posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CommunityPost"
+    post:
+      operationId: createCommunityPost
+      tags: [community]
+      summary: Create a new community post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCommunityPostRequest"
+      responses:
+        "201":
+          description: Created post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityPost"
+
+  /prices:
+    get:
+      operationId: getMandiPrices
+      tags: [prices]
+      summary: Get mandi crop prices
+      responses:
+        "200":
+          description: List of crop prices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MandiPrice"
+
+  /schemes:
+    get:
+      operationId: getGovernmentSchemes
+      tags: [schemes]
+      summary: Get government schemes
+      responses:
+        "200":
+          description: List of schemes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GovernmentScheme"
+
+  /ai/chat:
+    post:
+      operationId: aiChat
+      tags: [ai]
+      summary: Chat with AI assistant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AIChatRequest"
+      responses:
+        "200":
+          description: AI response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIChatResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +122,147 @@ components:
       required:
         - status
 
+    CommunityPost:
+      type: object
+      properties:
+        id:
+          type: string
+        author:
+          type: string
+        location:
+          type: string
+        content:
+          type: string
+        contentHindi:
+          type: string
+        timestamp:
+          type: string
+        likes:
+          type: integer
+        category:
+          type: string
+          enum: [question, tip, news, weather]
+      required:
+        - id
+        - author
+        - location
+        - content
+        - timestamp
+        - likes
+        - category
+
+    CreateCommunityPostRequest:
+      type: object
+      properties:
+        author:
+          type: string
+        location:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
+          enum: [question, tip, news, weather]
+      required:
+        - author
+        - location
+        - content
+        - category
+
+    MandiPrice:
+      type: object
+      properties:
+        id:
+          type: string
+        crop:
+          type: string
+        cropHindi:
+          type: string
+        market:
+          type: string
+        state:
+          type: string
+        minPrice:
+          type: number
+        maxPrice:
+          type: number
+        modalPrice:
+          type: number
+        unit:
+          type: string
+        date:
+          type: string
+        trend:
+          type: string
+          enum: [up, down, stable]
+      required:
+        - id
+        - crop
+        - cropHindi
+        - market
+        - state
+        - minPrice
+        - maxPrice
+        - modalPrice
+        - unit
+        - date
+        - trend
+
+    GovernmentScheme:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        nameHindi:
+          type: string
+        description:
+          type: string
+        descriptionHindi:
+          type: string
+        benefit:
+          type: string
+        eligibility:
+          type: string
+        applyLink:
+          type: string
+        category:
+          type: string
+        icon:
+          type: string
+      required:
+        - id
+        - name
+        - nameHindi
+        - description
+        - descriptionHindi
+        - benefit
+        - eligibility
+        - category
+        - icon
+
+    AIChatRequest:
+      type: object
+      properties:
+        message:
+          type: string
+        language:
+          type: string
+          enum: [en, hi]
+          default: en
+      required:
+        - message
+
+    AIChatResponse:
+      type: object
+      properties:
+        reply:
+          type: string
+        suggestions:
+          type: array
+          items:
+            type: string
+      required:
+        - reply
+        - suggestions
