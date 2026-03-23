@@ -1,16 +1,23 @@
 import { Router, type IRouter } from "express";
-import { readFileSync } from "fs";
-import { resolve } from "path";
-import { GetGovernmentSchemesResponse } from "@workspace/api-zod";
-
-const DATA_FILE = resolve(process.cwd(), "src/data/schemes.json");
+import { GovernmentScheme } from "../models/GovernmentScheme";
 
 const router: IRouter = Router();
 
-router.get("/", (_req, res) => {
-  const raw = readFileSync(DATA_FILE, "utf-8");
-  const data = GetGovernmentSchemesResponse.parse(JSON.parse(raw));
-  res.json(data);
+router.get("/", async (_req, res) => {
+  const schemes = await GovernmentScheme.find().lean();
+  const formatted = schemes.map((s: any) => ({
+    id: s._id.toString(),
+    name: s.name,
+    nameHindi: s.nameHindi,
+    description: s.description,
+    descriptionHindi: s.descriptionHindi,
+    benefit: s.benefit,
+    eligibility: s.eligibility,
+    applyLink: s.applyLink ?? "",
+    category: s.category,
+    icon: s.icon,
+  }));
+  res.json(formatted);
 });
 
 export default router;

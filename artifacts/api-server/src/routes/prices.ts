@@ -1,16 +1,24 @@
 import { Router, type IRouter } from "express";
-import { readFileSync } from "fs";
-import { resolve } from "path";
-import { GetMandiPricesResponse } from "@workspace/api-zod";
-
-const DATA_FILE = resolve(process.cwd(), "src/data/mandi-prices.json");
+import { MandiPrice } from "../models/MandiPrice";
 
 const router: IRouter = Router();
 
-router.get("/", (_req, res) => {
-  const raw = readFileSync(DATA_FILE, "utf-8");
-  const data = GetMandiPricesResponse.parse(JSON.parse(raw));
-  res.json(data);
+router.get("/", async (_req, res) => {
+  const prices = await MandiPrice.find().lean();
+  const formatted = prices.map((p: any) => ({
+    id: p._id.toString(),
+    crop: p.crop,
+    cropHindi: p.cropHindi,
+    market: p.market,
+    state: p.state,
+    minPrice: p.minPrice,
+    maxPrice: p.maxPrice,
+    modalPrice: p.modalPrice,
+    unit: p.unit,
+    date: p.date,
+    trend: p.trend,
+  }));
+  res.json(formatted);
 });
 
 export default router;

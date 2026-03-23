@@ -1,43 +1,45 @@
 import { Router, type IRouter } from "express";
-import { readFileSync, writeFileSync } from "fs";
-import { resolve } from "path";
-import { GetCommunityPostsResponse, CreateCommunityPostBody } from "@workspace/api-zod";
-
-const DATA_FILE = resolve(process.cwd(), "src/data/community-posts.json");
-
-function readPosts() {
-  const raw = readFileSync(DATA_FILE, "utf-8");
-  return JSON.parse(raw);
-}
-
-function writePosts(posts: unknown[]) {
-  writeFileSync(DATA_FILE, JSON.stringify(posts, null, 2));
-}
+import { CommunityPost } from "../models/CommunityPost";
+import { CreateCommunityPostBody } from "@workspace/api-zod";
 
 const router: IRouter = Router();
 
-router.get("/posts", (_req, res) => {
-  const posts = readPosts();
-  const data = GetCommunityPostsResponse.parse(posts);
-  res.json(data);
+router.get("/posts", async (_req, res) => {
+  const posts = await CommunityPost.find().sort({ timestamp: -1 }).lean();
+  const formatted = posts.map((p: any) => ({
+    id: p._id.toString(),
+    author: p.author,
+    location: p.location,
+    content: p.content,
+    contentHindi: p.contentHindi ?? "",
+    category: p.category,
+    timestamp: p.timestamp instanceof Date ? p.timestamp.toISOString() : p.timestamp,
+    likes: p.likes,
+  }));
+  res.json(formatted);
 });
 
-router.post("/posts", (req, res) => {
+router.post("/posts", async (req, res) => {
   const body = CreateCommunityPostBody.parse(req.body);
-  const posts = readPosts();
-  const newPost = {
-    id: String(Date.now()),
+  const post = await CommunityPost.create({
     author: body.author,
     location: body.location,
     content: body.content,
-    contentHindi: "",
     category: body.category,
-    timestamp: new Date().toISOString(),
+    contentHindi: "",
     likes: 0,
-  };
-  posts.unshift(newPost);
-  writePosts(posts);
-  res.status(201).json(newPost);
+    timestamp: new Date(),
+  });
+  res.status(201).json({
+    id: post._id.toString(),
+    author: post.author,
+    location: post.location,
+    content: post.content,
+    contentHindi: post.contentHindi,
+    category: post.category,
+    timestamp: post.timestamp.toISOString(),
+    likes: post.likes,
+  });
 });
 
 export default router;

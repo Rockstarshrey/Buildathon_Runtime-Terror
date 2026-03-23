@@ -12,7 +12,7 @@ Full-stack pnpm workspace monorepo. KisanConnect is a messaging and information 
 - **TypeScript version**: 5.9
 - **Frontend**: React + Vite + Tailwind CSS (artifacts/kisan-connect)
 - **Backend**: Express 5 (artifacts/api-server)
-- **Database**: JSON file storage (no external DB)
+- **Database**: MongoDB Atlas (via Mongoose)
 - **Validation**: Zod (`zod/v4`), `drizzle-zod`
 - **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (ESM bundle)
