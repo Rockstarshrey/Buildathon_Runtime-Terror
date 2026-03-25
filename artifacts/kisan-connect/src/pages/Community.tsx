@@ -417,7 +417,7 @@ export default function Community() {
     <div className="min-h-full bg-gradient-to-b from-slate-50 via-green-50/20 to-white">
 
       {/* ── Hero Banner ──────────────────────────────────────── */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-green-900 via-emerald-800 to-teal-800 pt-10 pb-16 px-4 sm:px-6 lg:px-8">
+      <div className="relative overflow-hidden bg-gradient-to-r from-green-900 via-emerald-800 to-teal-800 pt-10 pb-10 px-4 sm:px-6 lg:px-8">
         <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-emerald-400/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
         <div className="absolute bottom-0 left-1/4 w-64 h-64 rounded-full bg-teal-300/10 blur-3xl translate-y-1/2 pointer-events-none" />
 
@@ -454,7 +454,7 @@ export default function Community() {
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 -mt-6 pb-12">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 pb-12">
 
         {/* ── "What's on your mind?" compose bar ────────────── */}
         <motion.div
