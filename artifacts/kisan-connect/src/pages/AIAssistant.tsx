@@ -213,10 +213,11 @@ export default function AIAssistant() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
+          <div className="flex items-center gap-2.5">
+            {/* New Chat — frosted pill */}
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
               onClick={() => {
                 setMessages([{
                   id: "welcome",
@@ -226,19 +227,27 @@ export default function AIAssistant() {
                   suggestions: [],
                 }]);
               }}
-              className="text-lime-200 hover:text-white hover:bg-white/15 rounded-xl h-9 px-3 gap-1.5 text-xs font-semibold"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 border border-white/25 hover:border-white/50 text-white text-xs font-semibold backdrop-blur-sm transition-all duration-200 shadow-sm"
             >
-              <RotateCcw className="w-3.5 h-3.5" /> New Chat
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <RotateCcw className="w-3.5 h-3.5" />
+              New Chat
+            </motion.button>
+
+            {/* Language toggle — glowing lime pill */}
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
               onClick={() => setLanguage((l) => (l === "en" ? "hi" : "en"))}
-              className="text-lime-200 hover:text-white hover:bg-white/15 rounded-xl h-9 px-3 gap-1.5 text-xs font-semibold border border-lime-300/30"
+              className="flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs transition-all duration-200 shadow-md"
+              style={{
+                background: "linear-gradient(135deg, #a3e635 0%, #84cc16 60%, #65a30d 100%)",
+                color: "#14532d",
+                boxShadow: "0 2px 12px rgba(163,230,53,0.4)",
+              }}
             >
               <Languages className="w-3.5 h-3.5" />
               {language === "en" ? "हिंदी" : "English"}
-            </Button>
+            </motion.button>
           </div>
         </div>
       </div>
@@ -357,13 +366,22 @@ export default function AIAssistant() {
                       key={i}
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
+                      whileHover={{ y: -2, boxShadow: "0 6px 20px rgba(132,204,22,0.2)" }}
+                      whileTap={{ scale: 0.97 }}
                       transition={{ delay: 0.18 + i * 0.06 }}
                       onClick={() => handleSend(s.text)}
                       disabled={isStreaming}
-                      className="flex items-center gap-2 px-3 py-2 bg-white/80 backdrop-blur rounded-xl border border-lime-200/60 hover:border-lime-400/70 hover:bg-white hover:shadow-sm hover:shadow-lime-100 text-left transition-all duration-150 group"
+                      className="relative flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border text-left transition-colors duration-150 group overflow-hidden"
+                      style={{
+                        background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,253,244,0.95) 100%)",
+                        borderColor: "rgba(163,230,53,0.35)",
+                      }}
                     >
-                      <span className="text-base leading-none shrink-0">{s.icon}</span>
-                      <p className="text-xs font-medium text-foreground group-hover:text-lime-800 leading-snug line-clamp-2">{s.text}</p>
+                      {/* subtle gradient shine on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-lime-50 to-green-50 opacity-0 group-hover:opacity-100 transition-opacity duration-150 rounded-xl" />
+                      <span className="text-base leading-none shrink-0 relative z-10">{s.icon}</span>
+                      <p className="text-xs font-semibold text-slate-700 group-hover:text-lime-800 leading-snug line-clamp-2 relative z-10">{s.text}</p>
+                      <span className="ml-auto shrink-0 text-lime-400 group-hover:text-lime-600 opacity-0 group-hover:opacity-100 transition-all duration-150 relative z-10 text-sm">→</span>
                     </motion.button>
                   ))}
                 </div>
@@ -429,31 +447,51 @@ export default function AIAssistant() {
 
               {/* Bottom row: hint left, send button right */}
               <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-100">
-                <span className="text-[11px] text-slate-400 select-none">
-                  <kbd className="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] font-mono text-slate-500">⏎</kbd> send ·{" "}
-                  <kbd className="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] font-mono text-slate-500">⇧⏎</kbd> new line
+                <span className="text-[11px] text-slate-400 select-none hidden sm:flex items-center gap-1">
+                  <kbd className="bg-lime-50 border border-lime-200 px-1.5 py-0.5 rounded-md text-[10px] font-mono text-lime-700">⏎</kbd>
+                  <span>send</span>
+                  <span className="text-slate-300 mx-1">·</span>
+                  <kbd className="bg-lime-50 border border-lime-200 px-1.5 py-0.5 rounded-md text-[10px] font-mono text-lime-700">⇧⏎</kbd>
+                  <span>new line</span>
                 </span>
-                <motion.div whileTap={{ scale: 0.88 }} whileHover={{ scale: 1.06 }}>
+                <motion.div
+                  whileTap={{ scale: 0.9 }}
+                  whileHover={input.trim() && !isStreaming ? { scale: 1.08 } : {}}
+                  className="ml-auto"
+                >
                   <button
                     onClick={() => handleSend(input)}
                     disabled={!input.trim() || isStreaming}
-                    className="flex items-center justify-center w-9 h-9 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
-                    style={{
-                      background: (!input.trim() || isStreaming)
-                        ? "#e2e8f0"
-                        : "linear-gradient(135deg, #84cc16 0%, #22c55e 60%, #16a34a 100%)",
-                      boxShadow: (!input.trim() || isStreaming) ? "none" : "0 2px 12px rgba(132,204,22,0.45)",
-                    }}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm disabled:cursor-not-allowed transition-all duration-200"
+                    style={
+                      input.trim() && !isStreaming
+                        ? {
+                            background: "linear-gradient(135deg, #a3e635 0%, #22c55e 55%, #16a34a 100%)",
+                            color: "#fff",
+                            boxShadow: "0 4px 18px rgba(132,204,22,0.50), 0 1px 4px rgba(0,0,0,0.08)",
+                          }
+                        : {
+                            background: "#f1f5f9",
+                            color: "#94a3b8",
+                            boxShadow: "none",
+                          }
+                    }
                   >
                     {isStreaming ? (
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      >
-                        <RotateCcw className="w-4 h-4 text-white" />
-                      </motion.div>
+                      <>
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </motion.div>
+                        <span>Thinking…</span>
+                      </>
                     ) : (
-                      <Send className="w-4 h-4 text-white" />
+                      <>
+                        <Send className="w-4 h-4" />
+                        <span>Send</span>
+                      </>
                     )}
                   </button>
                 </motion.div>
