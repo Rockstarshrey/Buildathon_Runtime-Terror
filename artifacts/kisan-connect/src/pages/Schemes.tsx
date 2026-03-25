@@ -1,20 +1,11 @@
 import { motion } from "framer-motion";
 import { 
-  ShieldCheck, 
-  Banknote, 
-  Tractor,
   ExternalLink,
   ChevronRight,
   Loader2
 } from "lucide-react";
 import { useGetGovernmentSchemes } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
-
-const iconMap: Record<string, any> = {
-  Banknote: Banknote,
-  ShieldCheck: ShieldCheck,
-  Tractor: Tractor,
-};
 
 export default function Schemes() {
   const { data: schemes, isLoading } = useGetGovernmentSchemes();
@@ -34,8 +25,12 @@ export default function Schemes() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {schemes?.map((scheme, i) => {
-            const Icon = iconMap[scheme.icon] || ShieldCheck;
-            
+            const applyLink = (scheme as any).applyLink || "";
+
+            const openLink = () => {
+              if (applyLink) window.open(applyLink, "_blank", "noopener,noreferrer");
+            };
+
             return (
               <motion.div
                 key={scheme.id}
@@ -45,8 +40,8 @@ export default function Schemes() {
                 className="bg-white rounded-3xl p-6 border border-border/60 shadow-lg shadow-black/5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group"
               >
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-14 h-14 shrink-0 rounded-2xl bg-gradient-to-br from-primary/10 to-emerald-100 border border-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Icon className="w-7 h-7 text-primary" />
+                  <div className="w-14 h-14 shrink-0 rounded-2xl bg-gradient-to-br from-primary/10 to-emerald-100 border border-primary/20 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform select-none">
+                    {scheme.icon}
                   </div>
                   <div>
                     <span className="text-xs font-bold tracking-wider text-primary uppercase bg-primary/10 px-2 py-1 rounded-md">{scheme.category}</span>
@@ -69,15 +64,38 @@ export default function Schemes() {
                       <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">Eligibility (पात्रता)</span>
                       <span className="font-medium text-foreground">{scheme.eligibility}</span>
                     </div>
+                    {applyLink && (
+                      <div>
+                        <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">Official Website</span>
+                        <a
+                          href={applyLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary font-medium text-xs hover:underline break-all"
+                        >
+                          {applyLink}
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-border flex gap-3">
-                  <Button className="flex-1 rounded-xl bg-foreground hover:bg-foreground/90 text-white font-semibold">
-                    Apply Now
+                  <Button
+                    onClick={openLink}
+                    disabled={!applyLink}
+                    className="flex-1 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold"
+                  >
+                    Apply Now / आवेदन करें
                     <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
-                  <Button variant="outline" className="px-4 rounded-xl border-border/80">
+                  <Button
+                    variant="outline"
+                    onClick={openLink}
+                    disabled={!applyLink}
+                    className="px-4 rounded-xl border-border/80"
+                    title="Open official website"
+                  >
                     <ExternalLink className="w-4 h-4 text-muted-foreground" />
                   </Button>
                 </div>
