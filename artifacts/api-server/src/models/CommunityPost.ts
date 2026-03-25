@@ -1,5 +1,14 @@
 import mongoose from "mongoose";
 
+const replySchema = new mongoose.Schema(
+  {
+    author: { type: String, required: true },
+    content: { type: String, required: true },
+    timestamp: { type: Date, default: Date.now },
+  },
+  { versionKey: false, _id: true }
+);
+
 const communityPostSchema = new mongoose.Schema(
   {
     author: { type: String, required: true },
@@ -13,6 +22,7 @@ const communityPostSchema = new mongoose.Schema(
     },
     likes: { type: Number, default: 0 },
     timestamp: { type: Date, default: Date.now },
+    replies: { type: [replySchema], default: [] },
   },
   { versionKey: false }
 );
