@@ -1,0 +1,143 @@
+You are a senior UI/UX designer and frontend architect.
+
+I have built a web app called "KisanSetu" — a farmer-focused platform for India that provides mandi prices, crop advisory, government schemes, and community features.
+
+Your task is to completely redesign and enhance the UI/UX to make it:
+- Extremely intuitive for low-tech users (farmers)
+- Mobile-first and responsive
+- Clean, modern, and emotionally warm
+- High accessibility (large touch targets, readable fonts, multilingual support)
+- Fast and lightweight
+
+---------------------------------------
+
+🔷 CURRENT FEATURES:
+- Dashboard with greeting, weather, quick actions
+- Mandi Prices (cards with crop prices)
+- Crop Advisory (stage-based tips)
+- Government Schemes (currently empty/basic)
+- Community Groups
+- Sidebar navigation
+
+---------------------------------------
+
+🔷 TARGET UX IMPROVEMENTS:
+
+1. DESIGN SYSTEM
+- Use a consistent color system:
+  Primary: Natural green (trust + agriculture)
+  Secondary: earthy tones (brown, beige)
+  Accent: soft yellow/orange (alerts, highlights)
+- Add proper spacing system (8px grid)
+- Use modern typography (Inter / Poppins)
+- Increase font sizes for readability (important for farmers)
+
+---------------------------------------
+
+2. NAVIGATION UX
+- Convert sidebar into:
+  - Bottom navigation bar for mobile
+  - Sidebar only for desktop
+- Add icons + labels (clear visual cues)
+- Highlight active section clearly
+
+---------------------------------------
+
+3. DASHBOARD IMPROVEMENTS
+- Replace static greeting with:
+  - Dynamic greeting (morning/evening)
+  - Personalization (location-based suggestions)
+- Improve weather card:
+  - Add icons + forecast (next 3 days)
+- Add "Today’s Insights":
+  - Price trends
+  - Urgent alerts (rain, pests)
+
+---------------------------------------
+
+4. MANDI PRICES PAGE
+- Add:
+  - Search bar (crop name)
+  - Filter (state, district)
+  - Sort (price high → low)
+- Improve cards:
+  - Add trend arrows (↑ ↓)
+  - Color-coded price changes
+- Add simple graph (last 7 days price trend)
+
+---------------------------------------
+
+5. CROP ADVISORY
+- Convert into:
+  - Timeline-based UI (sowing → growth → harvest)
+- Add icons for:
+  - irrigation
+  - pesticide
+  - fertilizer
+- Add "Urgency level":
+  - Normal / Important / Critical
+
+---------------------------------------
+
+6. GOVERNMENT SCHEMES
+- This is currently weak — improve heavily:
+  - Add scheme cards with:
+    - eligibility
+    - benefits
+    - apply button
+- Add filters:
+  - small farmers / subsidies / loans
+- Add "Recommended for you"
+
+---------------------------------------
+
+7. COMMUNITY
+- Make it feel like WhatsApp/Telegram:
+  - Chat UI
+  - Group cards with activity indicators
+- Add:
+  - voice message support (important for low literacy users)
+  - regional language toggle
+
+---------------------------------------
+
+8. ACCESSIBILITY (VERY IMPORTANT)
+- Large buttons
+- High contrast text
+- Voice-assisted navigation (future scope)
+- Hindi + regional language toggle
+
+---------------------------------------
+
+9. MICRO-INTERACTIONS
+- Add subtle animations:
+  - hover effects
+  - button press feedback
+  - loading skeletons
+- Smooth transitions between pages
+
+---------------------------------------
+
+10. PERFORMANCE + REAL-WORLD USE
+- Optimize for low-end smartphones
+- Reduce heavy animations
+- Ensure fast loading
+
+---------------------------------------
+
+🔷 OUTPUT REQUIRED:
+- Improved UI layout descriptions
+- Component structure (React or HTML)
+- Suggestions for better UX flows
+- Optional: Tailwind CSS-based redesign
+- Keep it clean, production-ready, and hackathon-optimized
+
+---------------------------------------
+
+IMPORTANT:
+Design should feel:
+- Trustworthy (government-grade reliability)
+- Simple (like WhatsApp level usability)
+- Helpful (not overwhelming)
+
+Avoid complexity. Focus on clarity.
