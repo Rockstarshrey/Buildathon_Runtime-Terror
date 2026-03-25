@@ -13,9 +13,7 @@ import {
   Cloud,
   CloudRain,
   Newspaper,
-  Users,
   Bot,
-  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -170,30 +168,6 @@ export default function Home() {
           </motion.div>
         </div>
 
-        {/* Floating stat pills on hero */}
-        <motion.div
-          {...fadeUp(0.5)}
-          className="absolute bottom-12 right-4 sm:right-12 z-10 hidden lg:flex flex-col gap-3"
-        >
-          {[
-            { icon: Users, label: "500+ Farmers", sub: "जुड़े किसान" },
-            { icon: Zap, label: "Live Prices", sub: "ताज़ा भाव" },
-            { icon: Bot, label: "AI Advisor", sub: "फसल सलाह" },
-          ].map((pill) => (
-            <div
-              key={pill.label}
-              className="flex items-center gap-3 bg-white/15 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-2.5 shadow-lg"
-            >
-              <div className="w-8 h-8 rounded-xl bg-primary/30 flex items-center justify-center">
-                <pill.icon className="w-4 h-4 text-emerald-200" />
-              </div>
-              <div>
-                <p className="text-white font-bold text-sm leading-tight">{pill.label}</p>
-                <p className="text-white/60 text-xs">{pill.sub}</p>
-              </div>
-            </div>
-          ))}
-        </motion.div>
       </section>
 
       {/* ─── Quick Access Cards ───────────────────────────── */}
