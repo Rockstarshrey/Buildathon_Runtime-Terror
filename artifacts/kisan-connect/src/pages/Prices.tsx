@@ -400,27 +400,20 @@ export default function Prices() {
             <p className="text-muted-foreground font-medium text-sm">Loading live prices…</p>
           </div>
         ) : (
-          /* Gradient wrapper gives the table its colored backdrop */
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-            {/* Gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-800 via-green-700 to-teal-700" />
-            {/* Subtle pattern overlay */}
-            <div className="absolute inset-0 opacity-10"
-              style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "28px 28px" }} />
-
+          <div className="relative rounded-3xl overflow-hidden shadow-lg border border-border/60">
             {/* Inner white table card */}
-            <div className="relative m-3 rounded-2xl overflow-hidden bg-white shadow-inner">
+            <div className="relative overflow-hidden bg-white">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-gradient-to-r from-gray-900 to-gray-800 text-white">
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap">#</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap">Crop / फसल</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap">Market / मंडी</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap">Modal Price / भाव</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap hidden sm:table-cell">Range</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-center">Trend</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-right hidden md:table-cell">Date</th>
+                    <tr className="bg-muted/50 border-b border-border">
+                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">#</th>
+                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">Crop / फसल</th>
+                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">Market / मंडी</th>
+                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">Modal Price / भाव</th>
+                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground hidden sm:table-cell">Range</th>
+                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground text-center">Trend</th>
+                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground text-right hidden md:table-cell">Date</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -537,8 +530,7 @@ export default function Prices() {
               )}
             </div>
 
-            {/* Gradient footer label */}
-            <div className="relative px-5 py-3 flex items-center justify-between text-white/60 text-xs">
+            <div className="px-5 py-3 bg-muted/30 border-t border-border/40 flex items-center justify-between text-muted-foreground text-xs">
               <span>Source: Agmarknet / eNAM · Prices in ₹ per quintal</span>
               <span>Updated: {format(new Date(), "dd MMM yyyy")}</span>
             </div>
