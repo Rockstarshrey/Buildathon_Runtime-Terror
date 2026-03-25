@@ -149,13 +149,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-border mt-auto py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-muted-foreground">
-          <p className="font-medium text-sm">© {new Date().getFullYear()} KisanConnect. Empowering Indian Farmers.</p>
-          <p className="text-xs mt-1">किसान कनेक्ट - भारतीय किसानों का सशक्तिकरण</p>
-        </div>
-      </footer>
+      {/* Footer — hidden on AI Assistant page */}
+      {location !== "/ai-assistant" && (
+        <footer className="bg-white border-t border-border mt-auto py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-muted-foreground">
+            <p className="font-medium text-sm">© {new Date().getFullYear()} KisanConnect. Empowering Indian Farmers.</p>
+            <p className="text-xs mt-1">किसान कनेक्ट - भारतीय किसानों का सशक्तिकरण</p>
+          </div>
+        </footer>
+      )}
     </div>
   );
 }

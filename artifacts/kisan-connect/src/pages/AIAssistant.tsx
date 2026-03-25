@@ -373,51 +373,99 @@ export default function AIAssistant() {
         </div>
       </div>
 
-      {/* ── Input area ──────────────────────────────────────── */}
-      <div className="shrink-0 bg-white/90 backdrop-blur-md border-t border-lime-100 px-4 sm:px-6 py-4 shadow-[0_-4px_20px_rgba(132,204,22,0.08)]">
-        <div className="max-w-3xl mx-auto">
-          <div className="flex items-end gap-3 bg-white rounded-2xl border border-lime-200 shadow-md shadow-lime-100/50 px-4 py-3 focus-within:border-lime-400 focus-within:shadow-lg focus-within:shadow-lime-100 transition-all duration-200">
-            <Textarea
-              ref={textareaRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={
-                language === "en"
-                  ? "Ask about crops, soil, pests, or government schemes… (Shift+Enter for new line)"
-                  : "फसल, मिट्टी, कीट, या योजनाओं के बारे में पूछें…"
-              }
-              rows={1}
-              disabled={isStreaming}
-              className="flex-1 border-0 shadow-none focus-visible:ring-0 resize-none text-[15px] leading-relaxed bg-transparent p-0 min-h-[28px] max-h-[140px] placeholder:text-muted-foreground/60"
-            />
-            <div className="flex items-center gap-2 shrink-0 pb-0.5">
-              <motion.div whileTap={{ scale: 0.9 }}>
-                <Button
-                  size="icon"
-                  onClick={() => handleSend(input)}
-                  disabled={!input.trim() || isStreaming}
-                  className="w-10 h-10 rounded-xl bg-gradient-to-br from-lime-500 to-green-600 hover:from-lime-400 hover:to-green-500 disabled:from-muted disabled:to-muted text-white shadow-md shadow-lime-200 border-0 transition-all duration-150"
-                >
-                  {isStreaming
-                    ? <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}><RotateCcw className="w-4 h-4" /></motion.div>
-                    : <Send className="w-4 h-4 -ml-0.5" />
-                  }
-                </Button>
-              </motion.div>
-            </div>
-          </div>
+      {/* ── Animated gradient keyframes injected once ── */}
+      <style>{`
+        @keyframes gradientSpin {
+          0%   { background-position: 0% 50%; }
+          50%  { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        .kisan-input-glow {
+          background: linear-gradient(270deg, #84cc16, #22c55e, #a3e635, #16a34a, #bef264, #4ade80);
+          background-size: 300% 300%;
+          animation: gradientSpin 4s ease infinite;
+          border-radius: 20px;
+          padding: 2px;
+        }
+        .kisan-input-glow:focus-within {
+          box-shadow: 0 0 0 4px rgba(132,204,22,0.18), 0 8px 32px rgba(34,197,94,0.18);
+          animation-duration: 2s;
+        }
+        .kisan-input-inner {
+          background: #ffffff;
+          border-radius: 18px;
+          width: 100%;
+          height: 100%;
+        }
+      `}</style>
 
-          <div className="flex items-center justify-between mt-2.5 px-1">
-            <p className="text-[11px] text-muted-foreground">
-              <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] font-mono">Enter</kbd> to send ·{" "}
-              <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] font-mono">Shift+Enter</kbd> for new line
-            </p>
-            <p className="text-[11px] text-muted-foreground flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-lime-500" />
-              Powered by GPT · किसान खेती सलाह
-            </p>
-          </div>
+      {/* ── Input area ──────────────────────────────────────── */}
+      <div className="shrink-0 bg-white/80 backdrop-blur-md border-t border-lime-100/60 px-4 sm:px-6 pt-4 pb-5">
+        <div className="max-w-3xl mx-auto">
+
+          {/* Animated gradient border wrapper */}
+          <motion.div
+            className="kisan-input-glow"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <div className="kisan-input-inner px-4 pt-3.5 pb-3">
+              {/* Textarea */}
+              <Textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={
+                  language === "en"
+                    ? "Ask about crops, soil, pests, or government schemes…"
+                    : "फसल, मिट्टी, कीट, या योजनाओं के बारे में पूछें…"
+                }
+                rows={1}
+                disabled={isStreaming}
+                className="w-full border-0 shadow-none focus-visible:ring-0 resize-none text-[15px] leading-relaxed bg-transparent p-0 min-h-[28px] max-h-[160px] placeholder:text-slate-400 text-foreground"
+              />
+
+              {/* Bottom row: hint left, send button right */}
+              <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-100">
+                <span className="text-[11px] text-slate-400 select-none">
+                  <kbd className="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] font-mono text-slate-500">⏎</kbd> send ·{" "}
+                  <kbd className="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] font-mono text-slate-500">⇧⏎</kbd> new line
+                </span>
+                <motion.div whileTap={{ scale: 0.88 }} whileHover={{ scale: 1.06 }}>
+                  <button
+                    onClick={() => handleSend(input)}
+                    disabled={!input.trim() || isStreaming}
+                    className="flex items-center justify-center w-9 h-9 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+                    style={{
+                      background: (!input.trim() || isStreaming)
+                        ? "#e2e8f0"
+                        : "linear-gradient(135deg, #84cc16 0%, #22c55e 60%, #16a34a 100%)",
+                      boxShadow: (!input.trim() || isStreaming) ? "none" : "0 2px 12px rgba(132,204,22,0.45)",
+                    }}
+                  >
+                    {isStreaming ? (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      >
+                        <RotateCcw className="w-4 h-4 text-white" />
+                      </motion.div>
+                    ) : (
+                      <Send className="w-4 h-4 text-white" />
+                    )}
+                  </button>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Powered by line */}
+          <p className="text-center text-[11px] text-slate-400 mt-2.5 flex items-center justify-center gap-1">
+            <Sparkles className="w-3 h-3 text-lime-500" />
+            Powered by GPT · किसान खेती सलाह
+          </p>
         </div>
       </div>
     </div>
