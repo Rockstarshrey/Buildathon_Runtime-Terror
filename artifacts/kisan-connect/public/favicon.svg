@@ -1,3 +1,20 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+  <rect width="180" height="180" rx="36" fill="white"/>
+  <!-- Wheat stalk stem -->
+  <line x1="90" y1="155" x2="90" y2="40" stroke="#16a34a" stroke-width="6" stroke-linecap="round"/>
+  <!-- Bottom leaves -->
+  <path d="M90 130 C60 115 45 95 55 78 C65 90 80 110 90 130Z" fill="#16a34a"/>
+  <path d="M90 130 C120 115 135 95 125 78 C115 90 100 110 90 130Z" fill="#16a34a"/>
+  <!-- Middle grain spikelets -->
+  <ellipse cx="90" cy="105" rx="8" ry="13" fill="#16a34a"/>
+  <ellipse cx="76" cy="98" rx="7" ry="12" transform="rotate(-18 76 98)" fill="#16a34a"/>
+  <ellipse cx="104" cy="98" rx="7" ry="12" transform="rotate(18 104 98)" fill="#16a34a"/>
+  <!-- Upper grain spikelets -->
+  <ellipse cx="90" cy="82" rx="7" ry="12" fill="#16a34a"/>
+  <ellipse cx="78" cy="77" rx="6" ry="11" transform="rotate(-15 78 77)" fill="#16a34a"/>
+  <ellipse cx="102" cy="77" rx="6" ry="11" transform="rotate(15 102 77)" fill="#16a34a"/>
+  <!-- Top spikes -->
+  <path d="M90 60 L86 40 L90 45 L94 40 Z" fill="#16a34a"/>
+  <path d="M80 65 L74 47 L79 53 L82 46 Z" fill="#16a34a"/>
+  <path d="M100 65 L106 47 L101 53 L98 46 Z" fill="#16a34a"/>
 </svg>

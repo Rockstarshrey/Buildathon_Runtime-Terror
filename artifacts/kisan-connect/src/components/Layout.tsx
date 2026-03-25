@@ -38,11 +38,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative w-10 h-10 overflow-hidden rounded-xl bg-gradient-to-br from-primary to-emerald-400 p-0.5 shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-all duration-300">
+              <div className="relative w-11 h-11 overflow-hidden rounded-2xl bg-white shadow-lg shadow-primary/20 group-hover:shadow-primary/35 transition-all duration-300 border border-primary/10 flex items-center justify-center p-1">
                 <img 
-                  src={`${import.meta.env.BASE_URL}images/logo-icon.png`}
+                  src={`${import.meta.env.BASE_URL}images/logo-wheat.png`}
                   alt="KisanConnect Logo" 
-                  className="w-full h-full object-cover rounded-[10px] bg-white"
+                  className="w-full h-full object-contain"
                 />
               </div>
               <div className="flex flex-col">
