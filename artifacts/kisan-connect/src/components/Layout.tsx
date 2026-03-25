@@ -5,6 +5,7 @@ import {
   TrendingUp, 
   FileText, 
   Bot, 
+  Tractor,
   Menu,
   X
 } from "lucide-react";
@@ -69,6 +70,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
               })}
             </nav>
 
+            {/* AgriGo CTA button — desktop */}
+            <Link
+              href="/agrigo"
+              className={`hidden lg:flex items-center gap-2 ml-2 px-4 py-2 rounded-xl font-bold text-sm transition-all duration-200 ${
+                location === "/agrigo" || location.startsWith("/agrigo")
+                  ? "bg-lime-500 text-white shadow-md shadow-lime-200"
+                  : "bg-gradient-to-r from-lime-400 to-green-500 hover:from-lime-300 hover:to-green-400 text-green-900 shadow-md shadow-lime-200/60 hover:shadow-lime-300/70"
+              }`}
+            >
+              <Tractor className="w-4 h-4" />
+              AgriGo
+            </Link>
+
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -110,6 +124,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   </Link>
                 );
               })}
+              {/* AgriGo — mobile */}
+              <Link
+                href="/agrigo"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-between px-4 py-3 rounded-xl bg-gradient-to-r from-lime-400/20 to-green-400/20 border border-lime-300/40 text-green-800 font-bold transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <Tractor className="w-5 h-5 text-green-600" />
+                  <span>AgriGo</span>
+                </div>
+                <span className="text-sm opacity-60">एग्रीगो</span>
+              </Link>
             </div>
           </motion.div>
         )}
