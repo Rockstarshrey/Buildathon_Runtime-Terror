@@ -254,44 +254,7 @@ export default function AIAssistant() {
       >
         <div className="max-w-3xl mx-auto space-y-5">
 
-          {/* Starter suggestion cards (shown before any user message) */}
-          <AnimatePresence>
-            {!hasUserMessages && (
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.4 }}
-                className="mb-2"
-              >
-                <p className="text-center text-xs text-muted-foreground font-semibold uppercase tracking-widest mb-4">
-                  <Leaf className="w-3.5 h-3.5 inline mr-1 text-lime-600" />
-                  Try asking…
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {STARTERS.map((s, i) => (
-                    <motion.button
-                      key={i}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.07 }}
-                      onClick={() => handleSend(s.text)}
-                      disabled={isStreaming}
-                      className="flex items-start gap-3 p-4 bg-white/80 backdrop-blur rounded-2xl border border-lime-200/60 hover:border-lime-400/70 hover:bg-white hover:shadow-md hover:shadow-lime-100 text-left transition-all duration-200 group"
-                    >
-                      <span className="text-2xl leading-none">{s.icon}</span>
-                      <div>
-                        <p className="font-semibold text-sm text-foreground group-hover:text-lime-800 leading-snug">{s.text}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">{s.hi}</p>
-                      </div>
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Messages */}
+          {/* Messages first (welcome message is part of this) */}
           <AnimatePresence initial={false}>
             {messages.map((msg) => (
               <motion.div
@@ -373,6 +336,39 @@ export default function AIAssistant() {
                 </div>
               </motion.div>
             ))}
+          </AnimatePresence>
+
+          {/* Starter suggestion cards — shown BELOW the welcome message, before any user message */}
+          <AnimatePresence>
+            {!hasUserMessages && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.35, delay: 0.15 }}
+              >
+                <p className="text-xs text-muted-foreground font-semibold uppercase tracking-widest mb-2.5 flex items-center gap-1.5">
+                  <Leaf className="w-3 h-3 text-lime-600" />
+                  Try asking…
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {STARTERS.map((s, i) => (
+                    <motion.button
+                      key={i}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.18 + i * 0.06 }}
+                      onClick={() => handleSend(s.text)}
+                      disabled={isStreaming}
+                      className="flex items-center gap-2 px-3 py-2 bg-white/80 backdrop-blur rounded-xl border border-lime-200/60 hover:border-lime-400/70 hover:bg-white hover:shadow-sm hover:shadow-lime-100 text-left transition-all duration-150 group"
+                    >
+                      <span className="text-base leading-none shrink-0">{s.icon}</span>
+                      <p className="text-xs font-medium text-foreground group-hover:text-lime-800 leading-snug line-clamp-2">{s.text}</p>
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
       </div>
