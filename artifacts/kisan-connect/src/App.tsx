@@ -10,7 +10,6 @@ import Community from "@/pages/Community";
 import Prices from "@/pages/Prices";
 import Schemes from "@/pages/Schemes";
 import AIAssistant from "@/pages/AIAssistant";
-import SmsMode from "@/pages/SmsMode";
 
 // Create a query client with optimized default options
 const queryClient = new QueryClient({
@@ -32,7 +31,6 @@ function Router() {
         <Route path="/prices" component={Prices} />
         <Route path="/schemes" component={Schemes} />
         <Route path="/ai-assistant" component={AIAssistant} />
-        <Route path="/sms-mode" component={SmsMode} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

@@ -5,13 +5,11 @@ import {
   TrendingUp, 
   FileText, 
   Bot, 
-  Smartphone,
   Menu,
   X
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
 
 const NAV_LINKS = [
   { href: "/", label: "Home", labelHi: "होम", icon: Home },
@@ -24,11 +22,6 @@ const NAV_LINKS = [
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Do not render normal layout for SMS mode
-  if (location === "/sms-mode") {
-    return <>{children}</>;
-  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -76,16 +69,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
               })}
             </nav>
 
-            {/* Right Actions */}
-            <div className="hidden lg:flex items-center gap-4">
-              <Button asChild variant="outline" className="rounded-xl border-primary/20 text-primary hover:bg-primary/10 font-semibold h-11">
-                <Link href="/sms-mode">
-                  <Smartphone className="w-4 h-4 mr-2" />
-                  SMS Mode / एसएमएस
-                </Link>
-              </Button>
-            </div>
-
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -127,18 +110,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   </Link>
                 );
               })}
-              <div className="h-px bg-border my-2" />
-              <Link
-                href="/sms-mode"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-between px-4 py-3 rounded-xl bg-muted text-foreground font-medium"
-              >
-                <div className="flex items-center gap-3">
-                  <Smartphone className="w-5 h-5 text-muted-foreground" />
-                  <span>Basic SMS Mode</span>
-                </div>
-                <span className="text-sm opacity-60">एसएमएस मोड</span>
-              </Link>
             </div>
           </motion.div>
         )}
