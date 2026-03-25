@@ -240,12 +240,12 @@ export default function Home() {
           {/* Weather Card */}
           <motion.div {...fadeUp(0.1)} className="relative overflow-hidden rounded-3xl shadow-xl">
             <div className="absolute inset-0 bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600" />
-            {/* Background image — blue sky with clouds */}
+            {/* Background image — dramatic clouds */}
             <img
-              src="https://images.unsplash.com/photo-1592698117601-70c282996f9c?q=80&w=2070&auto=format&fit=crop"
+              src="https://images.unsplash.com/photo-1510987836583-e3fb9586c7b3?q=80&w=2070&auto=format&fit=crop"
               alt=""
               aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover object-top opacity-[0.22] mix-blend-overlay pointer-events-none select-none"
+              className="absolute inset-0 w-full h-full object-cover object-center opacity-40 mix-blend-screen pointer-events-none select-none"
             />
             {/* Decorative clouds */}
             <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10" />
