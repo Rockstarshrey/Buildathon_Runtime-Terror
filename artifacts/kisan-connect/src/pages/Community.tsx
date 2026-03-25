@@ -45,6 +45,42 @@ import {
 
 const BASE_URL = import.meta.env.BASE_URL ?? "/";
 
+const AVATAR_MAP: Record<string, string> = {
+  "Ramesh Kumar":    "ramesh-kumar.png",
+  "Sunita Devi":     "sunita-devi.png",
+  "Mahesh Patel":    "mahesh-patel.png",
+  "Dharmendra Singh":"dharmendra-singh.png",
+  "Kavita Sharma":   "kavita-sharma.png",
+  "Baldev Rao":      "baldev-rao.png",
+  "Chumaiya":        "chumaiya.png",
+};
+
+function getAvatar(name: string): string | null {
+  const base = (BASE_URL.endsWith("/") ? BASE_URL : BASE_URL + "/");
+  const file = AVATAR_MAP[name];
+  if (file) return `${base}images/avatars/${file}`;
+  return null;
+}
+
+function Avatar({ name, size = "md", gradient }: { name: string; size?: "sm" | "md"; gradient?: string }) {
+  const src = getAvatar(name);
+  const dims = size === "sm" ? "w-8 h-8 text-sm" : "w-11 h-11 text-lg";
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt={name}
+        className={`${dims} rounded-full object-cover border-2 border-white shadow-sm`}
+      />
+    );
+  }
+  return (
+    <div className={`${dims} rounded-full bg-gradient-to-br ${gradient ?? "from-primary/20 to-emerald-100"} flex items-center justify-center text-primary font-bold border-2 border-white`}>
+      {name.charAt(0).toUpperCase()}
+    </div>
+  );
+}
+
 const postSchema = z.object({
   author: z.string().min(2, "Name is too short"),
   location: z.string().min(2, "Location is required"),
@@ -195,9 +231,7 @@ function PostCard({ post: initialPost, index }: { post: Post; index: number }) {
           <div className="flex items-center gap-3">
             {/* Avatar with story-ring */}
             <div className={`p-0.5 rounded-full bg-gradient-to-br ${meta.gradient} shrink-0`}>
-              <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${grad} flex items-center justify-center text-white font-bold text-lg border-2 border-white`}>
-                {post.author.charAt(0).toUpperCase()}
-              </div>
+              <Avatar name={post.author} size="md" gradient={grad} />
             </div>
             <div>
               <h3 className="font-bold text-foreground leading-tight">{post.author}</h3>
@@ -315,9 +349,7 @@ function PostCard({ post: initialPost, index }: { post: Post; index: number }) {
                   <p className="text-xs text-destructive">{replyForm.formState.errors.author.message}</p>
                 )}
                 <div className="flex gap-2 items-end">
-                  <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${grad} flex items-center justify-center text-white font-bold text-sm shrink-0 mb-0.5`}>
-                    {(replyForm.watch("author") || "?").charAt(0).toUpperCase()}
-                  </div>
+                  <Avatar name={replyForm.watch("author") || "?"} size="sm" gradient={grad} />
                   <div className="flex-1 flex items-end gap-2 bg-muted/40 rounded-2xl pl-4 pr-2 py-2 border border-border/50 focus-within:border-primary/40 transition-colors">
                     <Textarea
                       {...replyForm.register("content")}
@@ -360,9 +392,7 @@ function PostCard({ post: initialPost, index }: { post: Post; index: number }) {
                     transition={{ delay: ri * 0.06 }}
                     className="flex gap-2.5"
                   >
-                    <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${avatarGradient(reply.author)} flex items-center justify-center text-white font-bold text-sm shrink-0`}>
-                      {reply.author.charAt(0).toUpperCase()}
-                    </div>
+                    <Avatar name={reply.author} size="sm" gradient={avatarGradient(reply.author)} />
                     <div className="flex-1">
                       <div className="bg-muted/50 rounded-2xl rounded-tl-sm px-4 py-3">
                         <div className="flex items-baseline gap-2 mb-1">
@@ -464,9 +494,11 @@ export default function Community() {
           className="bg-white rounded-3xl shadow-lg shadow-black/8 border border-border/40 p-4 mb-6"
         >
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-gradient-to-br from-primary/20 to-emerald-100 flex items-center justify-center text-primary font-bold text-lg border border-primary/20 shrink-0">
-              <Sparkles className="w-5 h-5" />
-            </div>
+            <img
+              src={`${(BASE_URL.endsWith("/") ? BASE_URL : BASE_URL + "/")}images/avatars/default-male.png`}
+              alt="You"
+              className="w-11 h-11 rounded-full object-cover border-2 border-primary/20 shadow-sm shrink-0"
+            />
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <button className="flex-1 text-left px-5 py-3 bg-muted/50 rounded-2xl text-muted-foreground text-sm font-medium hover:bg-muted/80 transition-colors border border-border/40 hover:border-primary/30">
