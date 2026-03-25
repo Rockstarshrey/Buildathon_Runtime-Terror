@@ -69,14 +69,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 );
               })}
 
-              {/* AgriGo — same style as nav links, no navigation yet */}
-              <div className="relative flex flex-col items-center px-4 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 cursor-pointer">
+              {/* AgriGo — external link */}
+              <a
+                href="https://web-app-builder-shreyaspiano.replit.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative flex flex-col items-center px-4 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 cursor-pointer"
+              >
                 <div className="flex items-center gap-2">
                   <Tractor className="w-4 h-4" />
                   <span className="font-semibold">AgriGo</span>
                 </div>
                 <span className="text-[10px] opacity-70 font-medium">एग्रीगो</span>
-              </div>
+              </a>
             </nav>
 
             {/* Mobile Menu Toggle */}
@@ -121,14 +126,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 );
               })}
 
-              {/* AgriGo — same style as other mobile items, no navigation yet */}
-              <div className="flex items-center justify-between px-4 py-3 rounded-xl text-foreground hover:bg-muted font-medium transition-colors cursor-pointer">
+              {/* AgriGo — external link (mobile) */}
+              <a
+                href="https://web-app-builder-shreyaspiano.replit.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-between px-4 py-3 rounded-xl text-foreground hover:bg-muted font-medium transition-colors cursor-pointer"
+              >
                 <div className="flex items-center gap-3">
                   <Tractor className="w-5 h-5 text-muted-foreground" />
                   <span>AgriGo</span>
                 </div>
                 <span className="text-sm opacity-60">एग्रीगो</span>
-              </div>
+              </a>
             </div>
           </motion.div>
         )}
