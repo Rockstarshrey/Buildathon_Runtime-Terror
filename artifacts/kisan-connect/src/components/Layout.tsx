@@ -68,20 +68,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   </Link>
                 );
               })}
-            </nav>
 
-            {/* AgriGo CTA button — desktop */}
-            <Link
-              href="/agrigo"
-              className={`hidden lg:flex items-center gap-2 ml-2 px-4 py-2 rounded-xl font-bold text-sm transition-all duration-200 ${
-                location === "/agrigo" || location.startsWith("/agrigo")
-                  ? "bg-lime-500 text-white shadow-md shadow-lime-200"
-                  : "bg-gradient-to-r from-lime-400 to-green-500 hover:from-lime-300 hover:to-green-400 text-green-900 shadow-md shadow-lime-200/60 hover:shadow-lime-300/70"
-              }`}
-            >
-              <Tractor className="w-4 h-4" />
-              AgriGo
-            </Link>
+              {/* AgriGo — same style as nav links, no navigation yet */}
+              <div className="relative flex flex-col items-center px-4 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 cursor-pointer">
+                <div className="flex items-center gap-2">
+                  <Tractor className="w-4 h-4" />
+                  <span className="font-semibold">AgriGo</span>
+                </div>
+                <span className="text-[10px] opacity-70 font-medium">एग्रीगो</span>
+              </div>
+            </nav>
 
             {/* Mobile Menu Toggle */}
             <button
@@ -124,18 +120,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   </Link>
                 );
               })}
-              {/* AgriGo — mobile */}
-              <Link
-                href="/agrigo"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-between px-4 py-3 rounded-xl bg-gradient-to-r from-lime-400/20 to-green-400/20 border border-lime-300/40 text-green-800 font-bold transition-colors"
-              >
+
+              {/* AgriGo — same style as other mobile items, no navigation yet */}
+              <div className="flex items-center justify-between px-4 py-3 rounded-xl text-foreground hover:bg-muted font-medium transition-colors cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <Tractor className="w-5 h-5 text-green-600" />
+                  <Tractor className="w-5 h-5 text-muted-foreground" />
                   <span>AgriGo</span>
                 </div>
                 <span className="text-sm opacity-60">एग्रीगो</span>
-              </Link>
+              </div>
             </div>
           </motion.div>
         )}
