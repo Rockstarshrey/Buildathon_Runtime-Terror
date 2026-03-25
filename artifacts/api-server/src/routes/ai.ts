@@ -3,13 +3,26 @@ import OpenAI from "openai";
 
 const router: IRouter = Router();
 
-function getOpenAIClient() {
+function getOpenAIClient(): { client: OpenAI; model: string } {
+  // Prefer the user's own OpenAI API key (gpt-4o)
+  const ownKey = process.env["OPENAI_API_KEY"];
+  if (ownKey) {
+    return {
+      client: new OpenAI({ apiKey: ownKey }),
+      model: "gpt-4o",
+    };
+  }
+
+  // Fall back to Replit-managed AI proxy
   const baseURL = process.env["AI_INTEGRATIONS_OPENAI_BASE_URL"];
   const apiKey = process.env["AI_INTEGRATIONS_OPENAI_API_KEY"];
   if (!baseURL || !apiKey) {
-    throw new Error("AI integration environment variables are not configured.");
+    throw new Error("No OpenAI API key or Replit AI integration configured.");
   }
-  return new OpenAI({ baseURL, apiKey });
+  return {
+    client: new OpenAI({ baseURL, apiKey }),
+    model: "gpt-4o-mini",
+  };
 }
 
 const SYSTEM_PROMPT = `You are KisanMitra (किसान मित्र), an expert AI agricultural advisor for Indian farmers. 
@@ -49,14 +62,14 @@ router.post("/chat", async (req, res) => {
   res.flushHeaders();
 
   try {
-    const openai = getOpenAIClient();
+    const { client: openai, model } = getOpenAIClient();
 
     const userMessage = language === "hi"
       ? `${message}\n\n(Please reply in Hindi)`
       : message;
 
     const stream = await openai.chat.completions.create({
-      model: "gpt-5-mini",
+      model,
       max_completion_tokens: 8192,
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
