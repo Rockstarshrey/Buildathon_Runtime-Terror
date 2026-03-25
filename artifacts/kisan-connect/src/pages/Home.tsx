@@ -188,6 +188,16 @@ export default function Home() {
             {...fadeUp(0.1)}
             className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary via-emerald-600 to-teal-600 p-8 shadow-2xl shadow-primary/25"
           >
+            {/* Background image — paddy field blended into gradient */}
+            <img
+              src="https://images.unsplash.com/photo-1612758373188-2d59b2717542?q=80&w=2070&auto=format&fit=crop"
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover object-center opacity-[0.18] mix-blend-luminosity pointer-events-none select-none"
+            />
+            {/* Gradient overlay to keep text readable */}
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-emerald-700/40 to-transparent pointer-events-none" />
+
             {/* Decorative circles */}
             <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/5" />
             <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-white/5" />
