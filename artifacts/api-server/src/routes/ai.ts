@@ -26,7 +26,15 @@ function isQuotaError(err: any): boolean {
   );
 }
 
-const SYSTEM_PROMPT = `You are KisanMitra (किसान मित्र), an expert AI agricultural advisor for Indian farmers. 
+function getSystemPrompt(language: string): string {
+  const langRule =
+    language === "hi"
+      ? "CRITICAL: You MUST reply ONLY in Hindi (हिंदी). Every word of your response must be in Hindi. Do NOT use English or Kannada under any circumstances."
+      : language === "kn"
+      ? "CRITICAL: You MUST reply ONLY in Kannada (ಕನ್ನಡ). Every word of your response must be in Kannada. Do NOT use English or Hindi under any circumstances."
+      : "CRITICAL: You MUST reply ONLY in English. Every word of your response must be in English. Do NOT use Hindi or Kannada under any circumstances.";
+
+  return `You are KisanMitra (किसान मित्र), an expert AI agricultural advisor for Indian farmers.
 You have deep knowledge of Indian farming practices, crops, soil types, weather patterns, government schemes, and market prices.
 
 Your expertise includes:
@@ -40,15 +48,15 @@ Your expertise includes:
 - Mandi prices and when to sell crops
 - Organic and sustainable farming
 
-Guidelines:
-- Always respond in the same language as the user's question (Hindi, Kannada, or English)
-- If in Hindi, use simple Hindi that rural farmers can understand (avoid complex Sanskrit words)
-- If in Kannada, use simple Kannada that rural Karnataka farmers can understand
+${langRule}
+
+Additional guidelines:
 - Keep advice practical and actionable for small/marginal farmers
 - Mention specific product names, quantities, and timings when relevant
 - Be empathetic and encouraging to farmers
 - If a question is not agriculture-related, gently redirect to farming topics
 - Always end with a helpful follow-up suggestion or tip`;
+}
 
 router.post("/chat", async (req, res) => {
   const { message, language = "en" } = req.body as { message: string; language?: string };
@@ -63,11 +71,7 @@ router.post("/chat", async (req, res) => {
   res.setHeader("Connection", "keep-alive");
   res.flushHeaders();
 
-  const langInstruction =
-    language === "hi" ? "\n\n(Please reply in Hindi / हिंदी में जवाब दें)" :
-    language === "kn" ? "\n\n(Please reply in Kannada / ಕನ್ನಡದಲ್ಲಿ ಉತ್ತರ ನೀಡಿ)" :
-    "";
-  const userMessage = message + langInstruction;
+  const userMessage = message;
 
   const suggestions =
     language === "hi"
@@ -114,7 +118,7 @@ router.post("/chat", async (req, res) => {
         model,
         max_tokens: 2048,
         messages: [
-          { role: "system", content: SYSTEM_PROMPT },
+          { role: "system", content: getSystemPrompt(language) },
           { role: "user", content: userMessage },
         ],
         stream: true,
