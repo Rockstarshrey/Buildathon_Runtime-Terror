@@ -77,13 +77,49 @@ function stripMarkdown(text: string): string {
     .trim();
 }
 
-function pickVoice(lang: string): SpeechSynthesisVoice | null {
-  const voices = window.speechSynthesis.getVoices();
-  return (
-    voices.find((v) => v.lang === lang) ??
-    voices.find((v) => v.lang.startsWith(lang.split("-")[0])) ??
-    null
+const FEMININE_HINTS = ["female", "woman", "zira", "hazel", "susan", "karen", "moira", "samantha", "victoria", "fiona", "tessa", "veena", "lekha", "heera", "google uk english female"];
+
+const VOICE_PRIORITY: Record<string, string[]> = {
+  "en-IN": ["Google UK English Female", "Microsoft Heera", "Veena", "Samantha", "Karen", "Moira", "Google US English"],
+  "hi-IN": ["Lekha", "Google हिन्दी", "Microsoft Heera", "Google UK English Female"],
+  "kn-IN": ["Google ಕನ್ನಡ", "Lekha", "Google हिन्दी", "Microsoft Heera", "Google UK English Female"],
+};
+
+function pickFeminineVoice(lang: string, voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null {
+  if (!voices.length) return null;
+
+  const priority = VOICE_PRIORITY[lang] ?? [];
+
+  for (const name of priority) {
+    const v = voices.find((v) => v.name.toLowerCase().includes(name.toLowerCase()));
+    if (v) return v;
+  }
+
+  const exactMatch = voices.filter((v) => v.lang === lang);
+  const femExact = exactMatch.find((v) => FEMININE_HINTS.some((h) => v.name.toLowerCase().includes(h)));
+  if (femExact) return femExact;
+  if (exactMatch.length) return exactMatch[0];
+
+  const prefix = lang.split("-")[0];
+  const prefixMatch = voices.filter((v) => v.lang.startsWith(prefix));
+  const femPrefix = prefixMatch.find((v) => FEMININE_HINTS.some((h) => v.name.toLowerCase().includes(h)));
+  if (femPrefix) return femPrefix;
+  if (prefixMatch.length) return prefixMatch[0];
+
+  const femEn = voices.find(
+    (v) => v.lang.startsWith("en") && FEMININE_HINTS.some((h) => v.name.toLowerCase().includes(h))
   );
+  return femEn ?? voices[0] ?? null;
+}
+
+function loadVoices(): Promise<SpeechSynthesisVoice[]> {
+  return new Promise((resolve) => {
+    const v = window.speechSynthesis.getVoices();
+    if (v.length > 0) return resolve(v);
+    const onChanged = () => resolve(window.speechSynthesis.getVoices());
+    window.speechSynthesis.addEventListener("voiceschanged", onChanged, { once: true });
+    setTimeout(() => resolve(window.speechSynthesis.getVoices()), 2000);
+  });
 }
 
 export default function AIAssistant() {
@@ -110,47 +146,74 @@ export default function AIAssistant() {
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const hasUserMessages = messages.some((m) => m.role === "user");
 
+  const resumeTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const lastSpokenRef = useRef<string | null>(null);
+
   const stopSpeaking = useCallback(() => {
+    if (resumeTimerRef.current) {
+      clearInterval(resumeTimerRef.current);
+      resumeTimerRef.current = null;
+    }
     window.speechSynthesis.cancel();
     setSpeakingMsgId(null);
   }, []);
 
-  const speakText = useCallback((text: string, lang: string, msgId: string) => {
+  const speakText = useCallback(async (text: string, lang: string, msgId: string) => {
     if (!window.speechSynthesis) return;
+
+    if (resumeTimerRef.current) {
+      clearInterval(resumeTimerRef.current);
+      resumeTimerRef.current = null;
+    }
     window.speechSynthesis.cancel();
 
     const clean = stripMarkdown(text);
     if (!clean) return;
 
+    const voices = await loadVoices();
+    const voice = pickFeminineVoice(lang, voices);
+
     const utter = new SpeechSynthesisUtterance(clean);
-    utter.lang = lang;
-    utter.rate = 0.92;
-    utter.pitch = 1.05;
+    utter.lang = voice ? voice.lang : lang;
+    if (voice) utter.voice = voice;
+    utter.rate = lang.startsWith("en") ? 0.90 : 0.78;
+    utter.pitch = 1.1;
+    utter.volume = 1.0;
 
-    const trySpeak = () => {
-      const voice = pickVoice(lang);
-      if (voice) utter.voice = voice;
-      setSpeakingMsgId(msgId);
-      utter.onend = () => setSpeakingMsgId(null);
-      utter.onerror = () => setSpeakingMsgId(null);
-      window.speechSynthesis.speak(utter);
+    const finish = () => {
+      setSpeakingMsgId(null);
+      if (resumeTimerRef.current) {
+        clearInterval(resumeTimerRef.current);
+        resumeTimerRef.current = null;
+      }
     };
+    utter.onend = finish;
+    utter.onerror = finish;
 
-    if (window.speechSynthesis.getVoices().length > 0) {
-      trySpeak();
-    } else {
-      window.speechSynthesis.addEventListener("voiceschanged", trySpeak, { once: true });
-    }
+    setSpeakingMsgId(msgId);
+    window.speechSynthesis.speak(utter);
+
+    resumeTimerRef.current = setInterval(() => {
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    }, 5000);
   }, []);
 
   useEffect(() => {
-    return () => { window.speechSynthesis?.cancel(); };
+    return () => {
+      if (resumeTimerRef.current) clearInterval(resumeTimerRef.current);
+      window.speechSynthesis?.cancel();
+    };
   }, []);
 
   useEffect(() => {
     if (!ttsEnabled) return;
-    const lastAi = [...messages].reverse().find((m) => m.role === "ai" && !m.streaming && m.content);
-    if (lastAi && lastAi.id !== "welcome") {
+    const lastAi = [...messages]
+      .reverse()
+      .find((m) => m.role === "ai" && !m.streaming && m.content && m.id !== "welcome");
+    if (lastAi && lastAi.id !== lastSpokenRef.current) {
+      lastSpokenRef.current = lastAi.id;
       speakText(lastAi.content, SPEECH_LANG[language], lastAi.id);
     }
   }, [messages, ttsEnabled, language, speakText]);
@@ -371,6 +434,8 @@ export default function AIAssistant() {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
               onClick={() => {
+                stopSpeaking();
+                lastSpokenRef.current = null;
                 setMessages([{
                   id: "welcome",
                   role: "ai",
