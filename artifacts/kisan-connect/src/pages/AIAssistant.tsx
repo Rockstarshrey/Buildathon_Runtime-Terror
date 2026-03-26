@@ -65,13 +65,13 @@ export default function AIAssistant() {
       role: "ai",
       timestamp: new Date(),
       content:
-        "Hello! I am **KisanMitra**, your AI crop advisor powered by GPT.\n\nAsk me anything about farming — crops, pests, soil, weather, government schemes, or mandi prices. I can answer in English or Hindi!\n\nनमस्ते! मैं किसानमित्र हूँ। खेती के बारे में कोई भी सवाल पूछें।",
+        "Hello! I am **KisanMitra**, your AI crop advisor powered by GPT.\n\nAsk me anything about farming — crops, pests, soil, weather, government schemes, or mandi prices. I can answer in **English, Hindi, or Kannada**!\n\nनमस्ते! मैं किसानमित्र हूँ। खेती के बारे में कोई भी सवाल पूछें।\n\nನಮಸ್ಕಾರ! ನಾನು ಕಿಸಾನ್‌ಮಿತ್ರ. ಕೃಷಿ ಬಗ್ಗೆ ಏನು ಬೇಕಾದರೂ ಕೇಳಿ!",
       suggestions: [],
     },
   ]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
-  const [language, setLanguage] = useState<"en" | "hi">("en");
+  const [language, setLanguage] = useState<"en" | "hi" | "kn">("en");
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -225,7 +225,7 @@ export default function AIAssistant() {
                   id: "welcome",
                   role: "ai",
                   timestamp: new Date(),
-                  content: "Hello! I am **KisanMitra**, your AI crop advisor. Ask me anything about farming!\n\nनमस्ते! मैं किसानमित्र हूँ। खेती के बारे में कोई भी सवाल पूछें।",
+                  content: "Hello! I am **KisanMitra**, your AI crop advisor. Ask me anything about farming — in English, Hindi, or Kannada!\n\nनमस्ते! मैं किसानमित्र हूँ। खेती के बारे में कोई भी सवाल पूछें।\n\nನಮಸ್ಕಾರ! ಕೃಷಿ ಬಗ್ಗೆ ಏನು ಬೇಕಾದರೂ ಕೇಳಿ!",
                   suggestions: [],
                 }]);
               }}
@@ -235,21 +235,33 @@ export default function AIAssistant() {
               {t("ai.new_chat")}
             </motion.button>
 
-            {/* Language toggle — glowing lime pill */}
-            <motion.button
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              onClick={() => setLanguage((l) => (l === "en" ? "hi" : "en"))}
-              className="flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs transition-all duration-200 shadow-md"
-              style={{
-                background: "linear-gradient(135deg, #a3e635 0%, #84cc16 60%, #65a30d 100%)",
-                color: "#14532d",
-                boxShadow: "0 2px 12px rgba(163,230,53,0.4)",
-              }}
+            {/* Language 3-way picker */}
+            <div
+              className="flex items-center rounded-full overflow-hidden border border-lime-300/50 shadow-md text-xs font-bold"
+              style={{ background: "rgba(255,255,255,0.12)" }}
             >
-              <Languages className="w-3.5 h-3.5" />
-              {language === "en" ? "हिंदी" : "English"}
-            </motion.button>
+              {([ 
+                { code: "en", label: "EN" },
+                { code: "hi", label: "हिन्दी" },
+                { code: "kn", label: "ಕನ್ನಡ" },
+              ] as { code: "en" | "hi" | "kn"; label: string }[]).map(({ code, label }, idx) => (
+                <button
+                  key={code}
+                  onClick={() => setLanguage(code)}
+                  className="px-3 py-1.5 transition-all duration-150"
+                  style={{
+                    background: language === code
+                      ? "linear-gradient(135deg, #a3e635 0%, #65a30d 100%)"
+                      : "transparent",
+                    color: language === code ? "#14532d" : "rgba(255,255,255,0.85)",
+                    borderLeft: idx > 0 ? "1px solid rgba(163,230,53,0.3)" : "none",
+                    fontWeight: language === code ? 800 : 600,
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
