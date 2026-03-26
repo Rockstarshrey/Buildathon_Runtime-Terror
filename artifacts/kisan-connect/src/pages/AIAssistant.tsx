@@ -3,7 +3,7 @@ import { useLang } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Send, Bot, User, Sparkles, Languages, Mic, RotateCcw,
-  Copy, Check, Leaf, Zap,
+  Copy, Check, Leaf, Zap, Volume2, VolumeX, Square,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -63,6 +63,29 @@ const SPEECH_LANG: Record<"en" | "hi" | "kn", string> = {
   kn: "kn-IN",
 };
 
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .replace(/#{1,6}\s*/g, "")
+    .replace(/`{1,3}[^`]*`{1,3}/g, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/^[-*+]\s+/gm, "")
+    .replace(/^\d+\.\s+/gm, "")
+    .replace(/\n{2,}/g, ". ")
+    .replace(/\n/g, " ")
+    .trim();
+}
+
+function pickVoice(lang: string): SpeechSynthesisVoice | null {
+  const voices = window.speechSynthesis.getVoices();
+  return (
+    voices.find((v) => v.lang === lang) ??
+    voices.find((v) => v.lang.startsWith(lang.split("-")[0])) ??
+    null
+  );
+}
+
 export default function AIAssistant() {
   const { t } = useLang();
   const [messages, setMessages] = useState<Message[]>([
@@ -79,11 +102,58 @@ export default function AIAssistant() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [language, setLanguage] = useState<"en" | "hi" | "kn">("en");
   const [isListening, setIsListening] = useState(false);
+  const [ttsEnabled, setTtsEnabled] = useState(true);
+  const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const hasUserMessages = messages.some((m) => m.role === "user");
+
+  const stopSpeaking = useCallback(() => {
+    window.speechSynthesis.cancel();
+    setSpeakingMsgId(null);
+  }, []);
+
+  const speakText = useCallback((text: string, lang: string, msgId: string) => {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+
+    const clean = stripMarkdown(text);
+    if (!clean) return;
+
+    const utter = new SpeechSynthesisUtterance(clean);
+    utter.lang = lang;
+    utter.rate = 0.92;
+    utter.pitch = 1.05;
+
+    const trySpeak = () => {
+      const voice = pickVoice(lang);
+      if (voice) utter.voice = voice;
+      setSpeakingMsgId(msgId);
+      utter.onend = () => setSpeakingMsgId(null);
+      utter.onerror = () => setSpeakingMsgId(null);
+      window.speechSynthesis.speak(utter);
+    };
+
+    if (window.speechSynthesis.getVoices().length > 0) {
+      trySpeak();
+    } else {
+      window.speechSynthesis.addEventListener("voiceschanged", trySpeak, { once: true });
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => { window.speechSynthesis?.cancel(); };
+  }, []);
+
+  useEffect(() => {
+    if (!ttsEnabled) return;
+    const lastAi = [...messages].reverse().find((m) => m.role === "ai" && !m.streaming && m.content);
+    if (lastAi && lastAi.id !== "welcome") {
+      speakText(lastAi.content, SPEECH_LANG[language], lastAi.id);
+    }
+  }, [messages, ttsEnabled, language, speakText]);
 
   const handleVoice = useCallback(() => {
     const SpeechRecognition =
@@ -276,6 +346,26 @@ export default function AIAssistant() {
           </div>
 
           <div className="flex items-center gap-2.5">
+            {/* TTS toggle */}
+            <motion.button
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.94 }}
+              onClick={() => {
+                if (speakingMsgId) stopSpeaking();
+                setTtsEnabled((v) => !v);
+              }}
+              title={ttsEnabled ? "Turn off auto-read aloud" : "Turn on auto-read aloud"}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-full border text-xs font-semibold backdrop-blur-sm transition-all duration-200 shadow-sm"
+              style={
+                ttsEnabled
+                  ? { background: "rgba(163,230,53,0.25)", borderColor: "rgba(163,230,53,0.6)", color: "#fff" }
+                  : { background: "rgba(255,255,255,0.12)", borderColor: "rgba(255,255,255,0.25)", color: "rgba(255,255,255,0.7)" }
+              }
+            >
+              {ttsEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+              <span className="hidden sm:inline">{ttsEnabled ? "Audio ON" : "Audio OFF"}</span>
+            </motion.button>
+
             {/* New Chat — frosted pill */}
             <motion.button
               whileHover={{ scale: 1.04 }}
@@ -383,9 +473,35 @@ export default function AIAssistant() {
                       />
                     )}
 
-                    {/* Copy button for AI messages */}
+                    {/* Copy + Speaker buttons for AI messages */}
                     {msg.role === "ai" && !msg.streaming && msg.content && (
-                      <div className="absolute -bottom-2 right-2">
+                      <div className="absolute -bottom-2 right-2 flex items-center gap-0.5">
+                        {/* Speaker / Stop button */}
+                        <motion.button
+                          onClick={() =>
+                            speakingMsgId === msg.id
+                              ? stopSpeaking()
+                              : speakText(msg.content, SPEECH_LANG[language], msg.id)
+                          }
+                          whileTap={{ scale: 0.88 }}
+                          className="p-1.5 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                          style={{
+                            color: speakingMsgId === msg.id ? "#16a34a" : undefined,
+                          }}
+                          title={speakingMsgId === msg.id ? "Stop reading" : "Read aloud"}
+                        >
+                          {speakingMsgId === msg.id ? (
+                            <motion.span
+                              animate={{ scale: [1, 1.25, 1] }}
+                              transition={{ duration: 0.8, repeat: Infinity }}
+                              className="flex"
+                            >
+                              <Square className="w-3.5 h-3.5 fill-lime-600 text-lime-600" />
+                            </motion.span>
+                          ) : (
+                            <Volume2 className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground" />
+                          )}
+                        </motion.button>
                         <CopyButton text={msg.content} />
                       </div>
                     )}
