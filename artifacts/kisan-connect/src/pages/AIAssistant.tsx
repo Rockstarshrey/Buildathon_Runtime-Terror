@@ -449,7 +449,11 @@ export default function AIAssistant() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder={t("ai.placeholder")}
+                placeholder={
+                  language === "hi" ? "फसल, कीट, मौसम, योजना के बारे में पूछें…" :
+                  language === "kn" ? "ಬೆಳೆ, ಕೀಟ, ಹವಾಮಾನ, ಯೋಜನೆಗಳ ಬಗ್ಗೆ ಕೇಳಿ…" :
+                  "Ask about crops, pests, weather, schemes…"
+                }
                 rows={1}
                 disabled={isStreaming}
                 className="w-full border-0 shadow-none focus-visible:ring-0 resize-none text-[15px] leading-relaxed bg-transparent p-0 min-h-[28px] max-h-[160px] placeholder:text-slate-400 text-foreground"
@@ -500,7 +504,7 @@ export default function AIAssistant() {
                     ) : (
                       <>
                         <Send className="w-4 h-4" />
-                        <span>{t("ai.send")}</span>
+                        <span>{language === "hi" ? "भेजें" : language === "kn" ? "ಕಳುಹಿಸಿ" : "Send"}</span>
                       </>
                     )}
                   </button>
