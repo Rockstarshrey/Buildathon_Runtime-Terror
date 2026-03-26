@@ -2,7 +2,7 @@
 
 ## Overview
 
-Full-stack pnpm workspace monorepo. KisanConnect is a messaging and information platform for farmers in India, featuring bilingual (English + Hindi) UI.
+Full-stack pnpm workspace monorepo. KisanConnect is a messaging and information platform for farmers in India, featuring full tri-lingual (English, Hindi, Kannada) i18n support.
 
 ## Stack
 
@@ -40,12 +40,19 @@ artifacts-monorepo/
 
 ## Features
 
-1. **Home Page** — Hero section with farm image, quick-access cards, bilingual labels
-2. **Community Feed** (`/community`) — Farmers can post tips/questions/news. Live data from JSON
-3. **Mandi Prices** (`/prices`) — Crop price table with trend indicators (wheat, rice, tomato, onion, potato)
+1. **Home Page** — Hero section with farm image, quick-access cards, AI banner, weather, news
+2. **Community Feed** (`/community`) — Farmers can post tips/questions/news. Live data from MongoDB
+3. **Mandi Prices** (`/prices`) — Crop price table with trend indicators and advanced filters
 4. **Government Schemes** (`/schemes`) — PM-KISAN, Fasal Bima, Kisan Credit Card, and more
-5. **AI Crop Assistant** (`/ai-assistant`) — Chat interface with keyword-based farming advice
-6. **SMS Mode** (`/sms-mode`) — Text-only minimal version for feature phones
+5. **AI Crop Assistant** (`/ai-assistant`) — GPT-powered streaming chat for farming advice
+6. **AgriGo** (`/agrigo`) — External link to AgriGo platform
+7. **i18n / Multi-language** — Full trilingual support: English, Hindi (हिन्दी), Kannada (ಕನ್ನಡ)
+   - Custom lightweight React Context system (`src/lib/i18n.tsx`)
+   - Translation files: `src/locales/en.json`, `hi.json`, `kn.json`
+   - Language switcher (🌐 globe icon) in navbar, persistent via localStorage
+   - Auto-detects browser language on first visit
+   - Lazy-loads Hindi/Kannada translations, English bundled as default
+   - Noto Sans Kannada font loaded from Google Fonts for Kannada rendering
 
 ## API Endpoints
 

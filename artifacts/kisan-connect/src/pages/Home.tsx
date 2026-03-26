@@ -16,6 +16,7 @@ import {
   Bot,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLang } from "@/lib/i18n";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 28 },
@@ -26,12 +27,9 @@ const fadeUp = (delay = 0) => ({
 const QUICK_CARDS = [
   {
     href: "/prices",
+    translKey: "mandi",
     icon: TrendingUp,
-    title: "Mandi Prices",
-    titleHi: "मंडी भाव",
-    desc: "Live crop rates updated daily across major markets",
     stat: "10 markets",
-    statLabel: "tracked live",
     gradient: "from-amber-400 via-orange-400 to-rose-400",
     glow: "shadow-amber-400/40",
     bg: "from-amber-50 to-orange-50",
@@ -45,12 +43,9 @@ const QUICK_CARDS = [
   },
   {
     href: "/schemes",
+    translKey: "schemes",
     icon: ShieldCheck,
-    title: "Govt Schemes",
-    titleHi: "सरकारी योजनाएं",
-    desc: "Discover subsidies, loans and insurance for your farm",
     stat: "₹6,000+",
-    statLabel: "avg benefit/year",
     gradient: "from-blue-500 via-indigo-500 to-violet-500",
     glow: "shadow-blue-400/40",
     bg: "from-blue-50 to-indigo-50",
@@ -64,12 +59,9 @@ const QUICK_CARDS = [
   },
   {
     href: "/community",
+    translKey: "community",
     icon: MessageSquare,
-    title: "Community",
-    titleHi: "किसान समुदाय",
-    desc: "Share tips, ask questions, connect with local farmers",
     stat: "500+",
-    statLabel: "farmers online",
     gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
     glow: "shadow-purple-400/40",
     bg: "from-violet-50 to-purple-50",
@@ -83,38 +75,22 @@ const QUICK_CARDS = [
   },
 ];
 
-const FORECAST = [
-  { day: "Today", icon: CloudSun, hi: 32, lo: 21, color: "text-amber-500" },
-  { day: "Tomorrow", icon: Cloud, hi: 29, lo: 19, color: "text-slate-400" },
-  { day: "Thu", icon: CloudRain, hi: 25, lo: 18, color: "text-sky-500" },
-  { day: "Fri", icon: Sun, hi: 33, lo: 22, color: "text-amber-400" },
+const FORECAST_KEYS = [
+  { dayKey: "weather.today", icon: CloudSun, hi: 32, lo: 21, color: "text-amber-500" },
+  { dayKey: "weather.tomorrow", icon: Cloud, hi: 29, lo: 19, color: "text-slate-400" },
+  { dayKey: "weather.thu", icon: CloudRain, hi: 25, lo: 18, color: "text-sky-500" },
+  { dayKey: "weather.fri", icon: Sun, hi: 33, lo: 22, color: "text-amber-400" },
 ];
 
-const NEWS = [
-  {
-    title: "Monsoon expected to arrive early in Central India",
-    hi: "मध्य भारत में मानसून जल्दी आने की संभावना",
-    date: "2 hours ago",
-    tag: "Weather",
-    tagColor: "bg-sky-100 text-sky-700",
-  },
-  {
-    title: "New MSP announced for Rabi crops 2024-25",
-    hi: "रबी फसलों 2024-25 के लिए नया एमएसपी घोषित",
-    date: "5 hours ago",
-    tag: "Policy",
-    tagColor: "bg-green-100 text-green-700",
-  },
-  {
-    title: "Govt increases subsidy on organic fertilizers by 15%",
-    hi: "सरकार ने जैविक खाद पर सब्सिडी 15% बढ़ाई",
-    date: "1 day ago",
-    tag: "Subsidy",
-    tagColor: "bg-amber-100 text-amber-700",
-  },
+const NEWS_KEYS = [
+  { titleKey: "news.item1.title", tagKey: "news.item1.tag", date: "2h", tagColor: "bg-sky-100 text-sky-700" },
+  { titleKey: "news.item2.title", tagKey: "news.item2.tag", date: "5h", tagColor: "bg-green-100 text-green-700" },
+  { titleKey: "news.item3.title", tagKey: "news.item3.tag", date: "1d", tagColor: "bg-amber-100 text-amber-700" },
 ];
 
 export default function Home() {
+  const { t } = useLang();
+
   return (
     <div className="flex flex-col min-h-full">
 
@@ -135,39 +111,34 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 text-white mb-6">
               <Sprout className="w-4 h-4 text-emerald-300" />
               <span className="text-sm font-semibold tracking-wide">
-                Empowering Farmers • किसानों का सशक्तिकरण
+                {t("hero.badge")}
               </span>
             </div>
 
             <h1 className="text-5xl lg:text-7xl font-display font-extrabold text-white leading-tight mb-6 drop-shadow-lg">
-              Smart farming,<br />
+              {t("hero.h1_1")}<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-green-100">
-                better futures.
+                {t("hero.h1_2")}
               </span>
             </h1>
 
             <p className="text-lg lg:text-xl text-green-50 mb-8 font-medium max-w-xl drop-shadow">
-              Get live mandi prices, connect with fellow farmers, and receive AI-driven crop advice in your language.
-              <br />
-              <span className="opacity-80 text-base mt-2 block">
-                लाइव मंडी भाव प्राप्त करें, साथी किसानों से जुड़ें, और अपनी भाषा में फसल सलाह प्राप्त करें।
-              </span>
+              {t("hero.subtitle")}
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
               <Button asChild size="lg" className="rounded-xl bg-gradient-to-r from-primary to-emerald-500 hover:from-primary/90 hover:to-emerald-400 text-white shadow-lg shadow-primary/30 border-0 h-14 px-8 text-lg group">
                 <Link href="/prices">
-                  Check Prices / भाव देखें
+                  {t("hero.btn_prices")}
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="rounded-xl border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 h-14 px-8 text-lg border-2">
-                <Link href="/ai-assistant">Ask AI / एआई से पूछें</Link>
+                <Link href="/ai-assistant">{t("hero.btn_ai")}</Link>
               </Button>
             </div>
           </motion.div>
         </div>
-
       </section>
 
       {/* ─── Quick Access Cards ───────────────────────────── */}
@@ -188,17 +159,13 @@ export default function Home() {
             {...fadeUp(0.1)}
             className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary via-emerald-600 to-teal-600 p-8 shadow-2xl shadow-primary/25"
           >
-            {/* Background image — paddy field blended into gradient */}
             <img
               src="https://images.unsplash.com/photo-1612758373188-2d59b2717542?q=80&w=2070&auto=format&fit=crop"
               alt=""
               aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover object-center opacity-[0.18] mix-blend-luminosity pointer-events-none select-none"
             />
-            {/* Gradient overlay to keep text readable */}
             <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-emerald-700/40 to-transparent pointer-events-none" />
-
-            {/* Decorative circles */}
             <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/5" />
             <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-white/5" />
             <div className="absolute top-4 right-1/3 w-32 h-32 rounded-full bg-emerald-400/20 blur-2xl" />
@@ -211,20 +178,19 @@ export default function Home() {
                 <div>
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 text-white text-xs font-bold mb-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
-                    AI POWERED
+                    {t("banner.ai_powered")}
                   </div>
                   <h2 className="text-2xl lg:text-3xl font-display font-bold text-white leading-tight">
-                    KisanMitra AI — Your Crop Advisor
+                    {t("banner.title")}
                   </h2>
                   <p className="text-emerald-100 mt-1 font-medium">
-                    Ask in English or Hindi. Get expert farming advice instantly.
-                    <span className="block opacity-80 text-sm mt-0.5">हिंदी या अंग्रेजी में पूछें। तुरंत विशेषज्ञ सलाह पाएं।</span>
+                    {t("banner.desc")}
                   </p>
                 </div>
               </div>
               <Button asChild size="lg" className="rounded-xl bg-white text-primary hover:bg-white/90 font-bold h-13 px-7 shrink-0 shadow-lg">
                 <Link href="/ai-assistant">
-                  Ask KisanMitra
+                  {t("banner.ask_btn")}
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </Button>
@@ -240,14 +206,12 @@ export default function Home() {
           {/* Weather Card */}
           <motion.div {...fadeUp(0.1)} className="relative overflow-hidden rounded-3xl shadow-xl">
             <div className="absolute inset-0 bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600" />
-            {/* Background image — dramatic clouds */}
             <img
               src="https://images.unsplash.com/photo-1510987836583-e3fb9586c7b3?q=80&w=2070&auto=format&fit=crop"
               alt=""
               aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover object-center opacity-40 mix-blend-screen pointer-events-none select-none"
             />
-            {/* Decorative clouds */}
             <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10" />
             <div className="absolute top-16 -left-6 w-28 h-28 rounded-full bg-white/8" />
             <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-blue-700/40 to-transparent" />
@@ -255,8 +219,7 @@ export default function Home() {
             <div className="relative z-10 p-6">
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <h3 className="font-bold text-lg text-white">Local Weather</h3>
-                  <p className="text-sky-200 text-sm font-medium">स्थानीय मौसम</p>
+                  <h3 className="font-bold text-lg text-white">{t("weather.title")}</h3>
                 </div>
                 <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
                   <CloudSun className="w-6 h-6 text-white" />
@@ -266,7 +229,7 @@ export default function Home() {
               <div className="flex items-end gap-3 mt-6 mb-2">
                 <span className="text-6xl font-display font-bold text-white leading-none">28°</span>
                 <div className="pb-1">
-                  <p className="text-white font-semibold text-lg">Partly Cloudy</p>
+                  <p className="text-white font-semibold text-lg">{t("weather.partly_cloudy")}</p>
                   <p className="text-sky-200 text-sm">H: 32° L: 21°</p>
                 </div>
               </div>
@@ -284,9 +247,9 @@ export default function Home() {
 
               {/* 4-day forecast */}
               <div className="grid grid-cols-4 gap-1 pt-4 border-t border-white/20">
-                {FORECAST.map((f) => (
-                  <div key={f.day} className="flex flex-col items-center gap-1 py-2 rounded-xl bg-white/10 backdrop-blur-sm">
-                    <span className="text-sky-200 text-[10px] font-bold uppercase">{f.day}</span>
+                {FORECAST_KEYS.map((f) => (
+                  <div key={f.dayKey} className="flex flex-col items-center gap-1 py-2 rounded-xl bg-white/10 backdrop-blur-sm">
+                    <span className="text-sky-200 text-[10px] font-bold uppercase">{t(f.dayKey)}</span>
                     <f.icon className={`w-5 h-5 ${f.color}`} />
                     <span className="text-white font-bold text-xs">{f.hi}°</span>
                     <span className="text-sky-300 text-[10px]">{f.lo}°</span>
@@ -304,17 +267,16 @@ export default function Home() {
                   <Newspaper className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-foreground leading-tight">Agriculture News</h3>
-                  <p className="text-primary text-sm font-medium">कृषि समाचार</p>
+                  <h3 className="font-bold text-lg text-foreground leading-tight">{t("news.title")}</h3>
                 </div>
               </div>
               <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 rounded-xl font-semibold text-sm">
-                View All <ArrowRight className="ml-1 w-3.5 h-3.5" />
+                {t("news.view_all")} <ArrowRight className="ml-1 w-3.5 h-3.5" />
               </Button>
             </div>
 
             <div className="flex flex-col divide-y divide-border/40 flex-1">
-              {NEWS.map((news, i) => (
+              {NEWS_KEYS.map((news, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, x: -8 }}
@@ -330,14 +292,13 @@ export default function Home() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${news.tagColor}`}>
-                        {news.tag}
+                        {t(news.tagKey)}
                       </span>
                       <span className="text-xs text-muted-foreground">{news.date}</span>
                     </div>
                     <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">
-                      {news.title}
+                      {t(news.titleKey)}
                     </h4>
-                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{news.hi}</p>
                   </div>
                   <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-all group-hover:translate-x-0.5 mt-1 shrink-0" />
                 </motion.div>
@@ -351,7 +312,14 @@ export default function Home() {
   );
 }
 
-function QuickCard({ card, delay }: { card: typeof QUICK_CARDS[0]; delay: number }) {
+function QuickCard({
+  card,
+  delay,
+}: {
+  card: (typeof QUICK_CARDS)[0];
+  delay: number;
+}) {
+  const { t } = useLang();
   return (
     <Link href={card.href}>
       <motion.div
@@ -383,25 +351,25 @@ function QuickCard({ card, delay }: { card: typeof QUICK_CARDS[0]; delay: number
         </div>
 
         {/* Icon */}
-        <div
-          className={`relative w-16 h-16 rounded-2xl ${card.iconBg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}
-        >
-          {/* Glow ring */}
+        <div className={`relative w-16 h-16 rounded-2xl ${card.iconBg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
           <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm scale-110`} />
           <card.icon className={`w-8 h-8 ${card.iconColor} relative z-10`} />
         </div>
 
         {/* Text */}
         <h3 className={`font-bold text-xl text-foreground leading-tight group-hover:${card.accent} transition-colors`}>
-          {card.title}
+          {t(`card.${card.translKey}.title`)}
         </h3>
-        <p className={`text-sm font-semibold ${card.accent} mb-3`}>{card.titleHi}</p>
-        <p className="text-muted-foreground text-sm leading-relaxed flex-1">{card.desc}</p>
+        <p className="text-muted-foreground text-sm leading-relaxed flex-1 mt-2">
+          {t(`card.${card.translKey}.desc`)}
+        </p>
 
         {/* Bottom stat */}
-        <div className={`mt-5 pt-4 border-t border-black/5 flex items-baseline gap-1.5`}>
+        <div className="mt-5 pt-4 border-t border-black/5 flex items-baseline gap-1.5">
           <span className={`text-2xl font-display font-bold ${card.accent}`}>{card.stat}</span>
-          <span className="text-xs text-muted-foreground font-medium">{card.statLabel}</span>
+          <span className="text-xs text-muted-foreground font-medium">
+            {t(`card.${card.translKey}.stat_label`)}
+          </span>
         </div>
       </motion.div>
     </Link>

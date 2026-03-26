@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import { useLang } from "@/lib/i18n";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -73,6 +74,7 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
 ];
 
 export default function Prices() {
+  const { t } = useLang();
   const { data: prices, isLoading } = useGetMandiPrices();
 
   const [search, setSearch] = useState("");
@@ -166,25 +168,24 @@ export default function Prices() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/30 text-emerald-200 text-xs font-bold mb-4 tracking-widest uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Live Market Data
+              {t("prices.live_badge")}
             </div>
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
               <div>
                 <h1 className="text-4xl lg:text-5xl font-display font-extrabold text-white leading-tight">
-                  Mandi Prices
+                  {t("prices.title")}
                 </h1>
-                <p className="text-emerald-300 font-semibold text-lg mt-1">ताज़ा मंडी भाव</p>
                 <p className="text-emerald-100/70 text-sm mt-2 max-w-lg">
-                  Real-time wholesale crop rates from major mandis across India — updated daily.
+                  {t("prices.subtitle")}
                 </p>
               </div>
 
               {/* Stat pills */}
               <div className="flex flex-wrap gap-3">
                 {[
-                  { icon: BarChart3, label: `${prices?.length ?? "–"} Markets`, sub: "tracked today", color: "bg-white/10 text-white" },
-                  { icon: Globe, label: `${states.length} States`, sub: "covered", color: "bg-white/10 text-white" },
-                  { icon: Activity, label: `${risingCount} Rising`, sub: "today", color: "bg-emerald-400/20 text-emerald-200" },
+                  { icon: BarChart3, label: `${prices?.length ?? "–"} ${t("prices.markets")}`, sub: t("prices.tracked_today"), color: "bg-white/10 text-white" },
+                  { icon: Globe, label: `${states.length} States`, sub: t("prices.states_covered"), color: "bg-white/10 text-white" },
+                  { icon: Activity, label: `${risingCount} Rising`, sub: t("prices.rising_today"), color: "bg-emerald-400/20 text-emerald-200" },
                 ].map((s) => (
                   <div key={s.label} className={`flex items-center gap-2.5 ${s.color} backdrop-blur rounded-2xl px-4 py-2.5 border border-white/10`}>
                     <s.icon className="w-4 h-4 opacity-80" />
@@ -240,7 +241,7 @@ export default function Prices() {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search crop, market, or state / फसल, मंडी या राज्य खोजें..."
+              placeholder={t("prices.search_placeholder")}
               className="pl-12 pr-10 h-12 bg-white rounded-2xl border-border/80 shadow-sm text-base focus-visible:ring-primary/30 focus-visible:border-primary/60 transition-all"
             />
             {search && (
@@ -272,7 +273,7 @@ export default function Prices() {
               <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
                 <SlidersHorizontal className="w-4 h-4 text-primary" />
               </div>
-              Filters / फ़िल्टर
+              {t("prices.filters")}
               {hasActiveFilters && (
                 <span className="bg-primary text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full tracking-wide">
                   {activeFilterTags.length} active
@@ -280,7 +281,7 @@ export default function Prices() {
               )}
             </span>
             <div className="flex items-center gap-2 text-muted-foreground text-xs">
-              <span>{filtered.length} of {prices?.length ?? 0} results</span>
+              <span>{filtered.length} / {prices?.length ?? 0} {t("prices.results")}</span>
               {filtersOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </div>
           </button>
@@ -299,9 +300,9 @@ export default function Prices() {
 
                   {/* Crop chips with emojis */}
                   <div>
-                    <p className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest mb-3">Crop / फसल</p>
+                    <p className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest mb-3">{t("prices.crop")}</p>
                     <div className="flex flex-wrap gap-2">
-                      <CropChip label="All / सभी" active={selectedCrop === "all"} onClick={() => setSelectedCrop("all")} />
+                      <CropChip label={t("prices.all")} active={selectedCrop === "all"} onClick={() => setSelectedCrop("all")} />
                       {crops.map((crop) => (
                         <CropChip
                           key={crop}
@@ -316,14 +317,14 @@ export default function Prices() {
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                     {/* State */}
                     <div>
-                      <p className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest mb-3">State / राज्य</p>
+                      <p className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest mb-3">{t("prices.state")}</p>
                       <Select value={selectedState} onValueChange={setSelectedState}>
                         <SelectTrigger className="w-full rounded-xl border-border/80 bg-white h-10 text-sm shadow-sm">
                           <MapPin className="w-3.5 h-3.5 mr-2 text-muted-foreground" />
-                          <SelectValue placeholder="All States" />
+                          <SelectValue placeholder={t("prices.all_states")} />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
-                          <SelectItem value="all">All States / सभी राज्य</SelectItem>
+                          <SelectItem value="all">{t("prices.all_states")}</SelectItem>
                           {states.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                         </SelectContent>
                       </Select>
@@ -332,7 +333,7 @@ export default function Prices() {
                     {/* Price Range */}
                     <div className="sm:col-span-2">
                       <p className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest mb-3">
-                        Price Range / मूल्य सीमा
+                        {t("prices.price_range")}
                         <span className="ml-2 text-primary font-bold normal-case tracking-normal text-xs">
                           ₹{effectiveMin.toLocaleString("en-IN")} – ₹{effectiveMax.toLocaleString("en-IN")}
                         </span>
@@ -366,7 +367,7 @@ export default function Prices() {
                     <div className="flex justify-end">
                       <Button variant="ghost" size="sm" onClick={clearAllFilters}
                         className="text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl text-xs gap-1.5">
-                        <X className="w-3.5 h-3.5" /> Clear All Filters
+                        <X className="w-3.5 h-3.5" /> {t("prices.clear_all")}
                       </Button>
                     </div>
                   )}
@@ -381,7 +382,7 @@ export default function Prices() {
           {activeFilterTags.length > 0 && (
             <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
               className="flex flex-wrap gap-2 mb-4">
-              <span className="text-xs font-semibold text-muted-foreground self-center">Active filters:</span>
+              <span className="text-xs font-semibold text-muted-foreground self-center">{t("prices.active_filters")}</span>
               {activeFilterTags.map((tag) => (
                 <Badge key={tag.key} onClick={tag.onRemove}
                   className="flex items-center gap-1.5 pl-3 pr-2 py-1 rounded-full bg-primary/10 border border-primary/30 text-primary font-semibold text-xs cursor-pointer hover:bg-rose-50 hover:border-rose-300 hover:text-rose-600 transition-colors group">
@@ -397,7 +398,7 @@ export default function Prices() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-28 gap-4">
             <Loader2 className="w-10 h-10 animate-spin text-primary" />
-            <p className="text-muted-foreground font-medium text-sm">Loading live prices…</p>
+            <p className="text-muted-foreground font-medium text-sm">{t("prices.loading")}</p>
           </div>
         ) : (
           <div className="relative rounded-3xl overflow-hidden shadow-lg border border-border/60">
@@ -408,12 +409,12 @@ export default function Prices() {
                   <thead>
                     <tr className="bg-muted/50 border-b border-border">
                       <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">#</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">Crop / फसल</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">Market / मंडी</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">Modal Price / भाव</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground hidden sm:table-cell">Range</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground text-center">Trend</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground text-right hidden md:table-cell">Date</th>
+                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">{t("prices.col_crop")}</th>
+                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">{t("prices.col_market")}</th>
+                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">{t("prices.col_price")}</th>
+                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground hidden sm:table-cell">{t("prices.col_range")}</th>
+                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground text-center">{t("prices.col_trend")}</th>
+                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground text-right hidden md:table-cell">{t("prices.col_date")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -424,10 +425,9 @@ export default function Prices() {
                             <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center">
                               <Search className="w-7 h-7 opacity-40" />
                             </div>
-                            <p className="font-bold text-base text-foreground">No prices match your filters</p>
-                            <p className="text-sm">कोई परिणाम नहीं मिला</p>
+                            <p className="font-bold text-base text-foreground">{t("prices.no_results")}</p>
                             <Button variant="outline" size="sm" onClick={clearAllFilters} className="mt-2 rounded-xl">
-                              Clear Filters
+                              {t("prices.clear_all")}
                             </Button>
                           </div>
                         </td>

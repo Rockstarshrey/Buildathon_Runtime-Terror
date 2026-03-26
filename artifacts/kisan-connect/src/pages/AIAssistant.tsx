@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useLang } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Send, Bot, User, Sparkles, Languages, Mic, RotateCcw,
@@ -57,6 +58,7 @@ function TypingDots() {
 }
 
 export default function AIAssistant() {
+  const { t } = useLang();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -230,7 +232,7 @@ export default function AIAssistant() {
               className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 border border-white/25 hover:border-white/50 text-white text-xs font-semibold backdrop-blur-sm transition-all duration-200 shadow-sm"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              New Chat
+              {t("ai.new_chat")}
             </motion.button>
 
             {/* Language toggle — glowing lime pill */}
@@ -435,11 +437,7 @@ export default function AIAssistant() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder={
-                  language === "en"
-                    ? "Ask about crops, soil, pests, or government schemes…"
-                    : "फसल, मिट्टी, कीट, या योजनाओं के बारे में पूछें…"
-                }
+                placeholder={t("ai.placeholder")}
                 rows={1}
                 disabled={isStreaming}
                 className="w-full border-0 shadow-none focus-visible:ring-0 resize-none text-[15px] leading-relaxed bg-transparent p-0 min-h-[28px] max-h-[160px] placeholder:text-slate-400 text-foreground"
@@ -490,7 +488,7 @@ export default function AIAssistant() {
                     ) : (
                       <>
                         <Send className="w-4 h-4" />
-                        <span>Send</span>
+                        <span>{t("ai.send")}</span>
                       </>
                     )}
                   </button>

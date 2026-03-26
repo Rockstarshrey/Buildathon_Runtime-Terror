@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useLang } from "@/lib/i18n";
 import { format, formatDistanceToNow } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -426,6 +427,7 @@ function PostCard({ post: initialPost, index }: { post: Post; index: number }) {
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function Community() {
+  const { t } = useLang();
   const { data: rawPosts, isLoading } = useGetCommunityPosts();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -455,14 +457,13 @@ export default function Community() {
           <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/30 text-emerald-200 text-xs font-bold mb-4 tracking-widest uppercase">
               <Users className="w-3.5 h-3.5" />
-              Farmer Community
+              {t("community.title")}
             </div>
             <h1 className="text-4xl lg:text-5xl font-display font-extrabold text-white leading-tight">
-              Community Feed
+              {t("community.title")}
             </h1>
-            <p className="text-emerald-300 font-semibold text-lg mt-1">किसान समुदाय चर्चा</p>
             <p className="text-emerald-100/70 text-sm mt-2 max-w-lg">
-              Ask questions, share tips, and stay updated with fellow farmers across India.
+              {t("community.subtitle")}
             </p>
 
             {/* Stat pills */}
@@ -628,6 +629,7 @@ export default function Community() {
 
 // ─── New Post Form Dialog ─────────────────────────────────────────────────────
 function NewPostForm({ onSuccess }: { onSuccess: () => void }) {
+  const { t } = useLang();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -656,7 +658,7 @@ function NewPostForm({ onSuccess }: { onSuccess: () => void }) {
       <DialogHeader className="p-6 bg-gradient-to-br from-green-900 via-emerald-800 to-teal-800 border-b border-border">
         <DialogTitle className="text-2xl font-display text-white flex items-center gap-2">
           <Sparkles className="w-6 h-6 text-emerald-300" />
-          Share with the Community
+          {t("community.new_post")}
         </DialogTitle>
         <p className="text-emerald-200 text-sm font-medium mt-1">किसान समुदाय के साथ साझा करें</p>
       </DialogHeader>

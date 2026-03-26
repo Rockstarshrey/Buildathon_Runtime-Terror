@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useLang } from "@/lib/i18n";
 import { 
   ExternalLink,
   ChevronRight,
@@ -8,14 +9,14 @@ import { useGetGovernmentSchemes } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 
 export default function Schemes() {
+  const { t } = useLang();
   const { data: schemes, isLoading } = useGetGovernmentSchemes();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
       <div className="mb-10 text-center max-w-2xl mx-auto">
-        <h1 className="text-4xl font-display font-bold text-foreground">Government Schemes</h1>
-        <p className="text-xl text-primary font-medium mt-2 mb-4">सरकारी योजनाएं</p>
-        <p className="text-muted-foreground">Discover financial support, insurance, and resources provided by the government to help you grow your farming business.</p>
+        <h1 className="text-4xl font-display font-bold text-foreground">{t("schemes.title")}</h1>
+        <p className="text-muted-foreground mt-4">{t("schemes.subtitle")}</p>
       </div>
 
       {isLoading ? (
@@ -57,11 +58,11 @@ export default function Schemes() {
                   
                   <div className="bg-muted/50 rounded-xl p-4 space-y-3 border border-border/50">
                     <div>
-                      <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">Benefits (लाभ)</span>
+                      <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">{t("schemes.benefits")}</span>
                       <span className="font-semibold text-emerald-700">{scheme.benefit}</span>
                     </div>
                     <div>
-                      <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">Eligibility (पात्रता)</span>
+                      <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">{t("schemes.eligibility")}</span>
                       <span className="font-medium text-foreground">{scheme.eligibility}</span>
                     </div>
                     {applyLink && (
@@ -86,7 +87,7 @@ export default function Schemes() {
                     disabled={!applyLink}
                     className="flex-1 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold"
                   >
-                    Apply Now / आवेदन करें
+                    {t("schemes.apply_now")}
                     <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                   <Button
