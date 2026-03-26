@@ -57,6 +57,12 @@ function TypingDots() {
   );
 }
 
+const SPEECH_LANG: Record<"en" | "hi" | "kn", string> = {
+  en: "en-IN",
+  hi: "hi-IN",
+  kn: "kn-IN",
+};
+
 export default function AIAssistant() {
   const { t } = useLang();
   const [messages, setMessages] = useState<Message[]>([
@@ -72,10 +78,64 @@ export default function AIAssistant() {
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [language, setLanguage] = useState<"en" | "hi" | "kn">("en");
+  const [isListening, setIsListening] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const hasUserMessages = messages.some((m) => m.role === "user");
+
+  const handleVoice = useCallback(() => {
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert("Voice input is not supported in this browser. Please use Chrome.");
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+
+    const recognition: SpeechRecognition = new SpeechRecognition();
+    recognition.lang = SPEECH_LANG[language];
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    recognitionRef.current = recognition;
+
+    let finalTranscript = input;
+
+    recognition.onstart = () => setIsListening(true);
+
+    recognition.onresult = (e: SpeechRecognitionEvent) => {
+      let interim = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const transcript = e.results[i][0].transcript;
+        if (e.results[i].isFinal) {
+          finalTranscript += (finalTranscript ? " " : "") + transcript;
+        } else {
+          interim = transcript;
+        }
+      }
+      setInput(finalTranscript + interim);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+      setInput(finalTranscript);
+      textareaRef.current?.focus();
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognition.start();
+  }, [isListening, language, input]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -459,7 +519,7 @@ export default function AIAssistant() {
                 className="w-full border-0 shadow-none focus-visible:ring-0 resize-none text-[15px] leading-relaxed bg-transparent p-0 min-h-[28px] max-h-[160px] placeholder:text-slate-400 text-foreground"
               />
 
-              {/* Bottom row: hint left, send button right */}
+              {/* Bottom row: hint left, voice + send button right */}
               <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-100">
                 <span className="text-[11px] text-slate-400 select-none hidden sm:flex items-center gap-1">
                   <kbd className="bg-lime-50 border border-lime-200 px-1.5 py-0.5 rounded-md text-[10px] font-mono text-lime-700">⏎</kbd>
@@ -468,10 +528,36 @@ export default function AIAssistant() {
                   <kbd className="bg-lime-50 border border-lime-200 px-1.5 py-0.5 rounded-md text-[10px] font-mono text-lime-700">⇧⏎</kbd>
                   <span>new line</span>
                 </span>
+
+                <div className="ml-auto flex items-center gap-2">
+                  {/* Voice button */}
+                  <motion.button
+                    type="button"
+                    onClick={handleVoice}
+                    disabled={isStreaming}
+                    whileTap={{ scale: 0.88 }}
+                    whileHover={!isStreaming ? { scale: 1.08 } : {}}
+                    title={isListening ? "Stop listening" : "Speak your question"}
+                    className="relative flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 disabled:cursor-not-allowed"
+                    style={
+                      isListening
+                        ? { background: "linear-gradient(135deg, #ef4444, #dc2626)", boxShadow: "0 0 0 4px rgba(239,68,68,0.2), 0 4px 14px rgba(220,38,38,0.4)" }
+                        : { background: "#f1f5f9", color: "#64748b" }
+                    }
+                  >
+                    {isListening && (
+                      <motion.span
+                        className="absolute inset-0 rounded-full border-2 border-red-400"
+                        animate={{ scale: [1, 1.5], opacity: [0.7, 0] }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "easeOut" }}
+                      />
+                    )}
+                    <Mic className="w-4 h-4" style={{ color: isListening ? "#fff" : "#64748b" }} />
+                  </motion.button>
+
                 <motion.div
                   whileTap={{ scale: 0.9 }}
                   whileHover={input.trim() && !isStreaming ? { scale: 1.08 } : {}}
-                  className="ml-auto"
                 >
                   <button
                     onClick={() => handleSend(input)}
@@ -509,6 +595,7 @@ export default function AIAssistant() {
                     )}
                   </button>
                 </motion.div>
+                </div>{/* end ml-auto flex gap-2 */}
               </div>
             </div>
           </motion.div>
