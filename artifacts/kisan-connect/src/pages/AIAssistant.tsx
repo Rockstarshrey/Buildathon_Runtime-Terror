@@ -185,11 +185,11 @@ export default function AIAssistant() {
   };
 
   return (
-    <div className="flex-1 flex flex-col h-[calc(100vh-64px)]"
+    <div className="fixed top-20 inset-x-0 bottom-0 flex flex-col"
       style={{ background: "linear-gradient(135deg, #f7ffe8 0%, #ecfdf5 50%, #f0fdf4 100%)" }}>
 
       {/* ── Header ──────────────────────────────────────────── */}
-      <div className="shrink-0 sticky top-0 bg-gradient-to-r from-green-800 via-lime-700 to-green-700 shadow-lg z-20">
+      <div className="shrink-0 bg-gradient-to-r from-green-800 via-lime-700 to-green-700 shadow-lg z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             {/* Bot avatar with glow ring */}
