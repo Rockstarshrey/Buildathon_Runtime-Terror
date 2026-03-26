@@ -144,7 +144,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 cursor-pointer font-semibold text-sm"
               >
                 <Tractor className="w-4 h-4 shrink-0" />
-                <span>AgriGo</span>
+                <span>{t("nav.agrigo")}</span>
               </a>
 
               {/* Language Switcher */}
@@ -200,7 +200,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 className="flex items-center gap-3 px-4 py-3 rounded-xl text-foreground hover:bg-muted font-medium transition-colors cursor-pointer"
               >
                 <Tractor className="w-5 h-5 text-muted-foreground" />
-                <span>AgriGo</span>
+                <span>{t("nav.agrigo")}</span>
               </a>
             </div>
           </motion.div>
