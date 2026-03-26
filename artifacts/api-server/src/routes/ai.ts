@@ -63,9 +63,11 @@ router.post("/chat", async (req, res) => {
   res.setHeader("Connection", "keep-alive");
   res.flushHeaders();
 
-  const userMessage = language === "hi"
-    ? `${message}\n\n(Please reply in Hindi)`
-    : message;
+  const langInstruction =
+    language === "hi" ? "\n\n(Please reply in Hindi / हिंदी में जवाब दें)" :
+    language === "kn" ? "\n\n(Please reply in Kannada / ಕನ್ನಡದಲ್ಲಿ ಉತ್ತರ ನೀಡಿ)" :
+    "";
+  const userMessage = message + langInstruction;
 
   const suggestions =
     language === "hi"
@@ -75,6 +77,14 @@ router.post("/chat", async (req, res) => {
           "पीएम-किसान योजना क्या है?",
           "फसल बीमा कैसे कराएं?",
           "मंडी में अच्छा भाव कब मिलता है?",
+        ]
+      : language === "kn"
+      ? [
+          "ಗೋಧಿ ಇಳುವರಿ ಹೇಗೆ ಹೆಚ್ಚಿಸುವುದು?",
+          "ಟೊಮೇಟೋ ಗಿಡಗಳಲ್ಲಿ ಕೀಟ ನಿಯಂತ್ರಣ ಹೇಗೆ?",
+          "ಪಿಎಂ-ಕಿಸಾನ್ ಯೋಜನೆ ಎಂದರೇನು?",
+          "ಬೆಳೆ ವಿಮೆ ಹೇಗೆ ಪಡೆಯುವುದು?",
+          "ಮಂಡಿಯಲ್ಲಿ ಉತ್ತಮ ಬೆಲೆ ಯಾವಾಗ ಸಿಗುತ್ತದೆ?",
         ]
       : [
           "How to increase wheat yield?",
