@@ -1,6 +1,6 @@
 import app from "./app";
 import { logger } from "./lib/logger";
-import { connectToMongoDB } from "./lib/mongodb";
+import { connectToMongoDB, isMongoConnected } from "./lib/mongodb";
 import { seedDatabase } from "./lib/seed";
 
 const rawPort = process.env["PORT"];
@@ -19,7 +19,10 @@ if (Number.isNaN(port) || port <= 0) {
 
 async function start() {
   await connectToMongoDB();
-  await seedDatabase();
+
+  if (isMongoConnected()) {
+    await seedDatabase();
+  }
 
   app.listen(port, (err) => {
     if (err) {
