@@ -80,7 +80,7 @@ export default function Prices() {
   const [search, setSearch] = useState("");
   const [selectedCrop, setSelectedCrop] = useState<string>("all");
   const [selectedState, setSelectedState] = useState<string>("all");
-  const [selectedTrends, setSelectedTrends] = useState<Set<Trend>>(new Set());
+  const [selectedTrend, setSelectedTrend] = useState<Trend | null>(null);
   const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>("price-high");
   const [filtersOpen, setFiltersOpen] = useState(true);
@@ -115,7 +115,7 @@ export default function Prices() {
           !p.state.toLowerCase().includes(q) && !p.market.toLowerCase().includes(q)) return false;
       if (selectedCrop !== "all" && p.crop !== selectedCrop) return false;
       if (selectedState !== "all" && p.state !== selectedState) return false;
-      if (selectedTrends.size > 0 && !selectedTrends.has(p.trend as Trend)) return false;
+      if (selectedTrend !== null && p.trend !== selectedTrend) return false;
       if (p.modalPrice < effectiveMin || p.modalPrice > effectiveMax) return false;
       return true;
     });
@@ -127,28 +127,24 @@ export default function Prices() {
       return 0;
     });
     return result;
-  }, [prices, search, selectedCrop, selectedState, selectedTrends, effectiveMin, effectiveMax, sortKey]);
+  }, [prices, search, selectedCrop, selectedState, selectedTrend, effectiveMin, effectiveMax, sortKey]);
 
   const toggleTrend = useCallback((trend: Trend) => {
-    setSelectedTrends((prev) => {
-      const next = new Set(prev);
-      next.has(trend) ? next.delete(trend) : next.add(trend);
-      return next;
-    });
+    setSelectedTrend((prev) => (prev === trend ? null : trend));
   }, []);
 
   const clearAllFilters = () => {
     setSearch(""); setSelectedCrop("all"); setSelectedState("all");
-    setSelectedTrends(new Set()); setPriceRange(null);
+    setSelectedTrend(null); setPriceRange(null);
   };
 
-  const hasActiveFilters = search || selectedCrop !== "all" || selectedState !== "all" || selectedTrends.size > 0 || priceRange !== null;
+  const hasActiveFilters = search || selectedCrop !== "all" || selectedState !== "all" || selectedTrend !== null || priceRange !== null;
 
   const activeFilterTags: { key: string; label: string; onRemove: () => void }[] = [];
   if (search) activeFilterTags.push({ key: "search", label: `"${search}"`, onRemove: () => setSearch("") });
   if (selectedCrop !== "all") activeFilterTags.push({ key: "crop", label: selectedCrop, onRemove: () => setSelectedCrop("all") });
   if (selectedState !== "all") activeFilterTags.push({ key: "state", label: selectedState, onRemove: () => setSelectedState("all") });
-  selectedTrends.forEach((t) => activeFilterTags.push({ key: `trend-${t}`, label: TREND_META[t].label, onRemove: () => toggleTrend(t) }));
+  if (selectedTrend !== null) activeFilterTags.push({ key: `trend-${selectedTrend}`, label: TREND_META[selectedTrend].label, onRemove: () => setSelectedTrend(null) });
   if (priceRange) activeFilterTags.push({ key: "price", label: `₹${priceRange[0]} – ₹${priceRange[1]}`, onRemove: () => setPriceRange(null) });
 
   const risingCount  = prices?.filter(p => p.trend === "up").length ?? 0;
@@ -217,7 +213,7 @@ export default function Prices() {
               transition={{ delay: 0.05 * (["up","down","stable"].indexOf(trend)) }}
               onClick={() => toggleTrend(trend)}
               className={`relative overflow-hidden rounded-2xl p-4 shadow-md text-left transition-all duration-200 ${
-                selectedTrends.has(trend)
+                selectedTrend === trend
                   ? `bg-gradient-to-br ${bg} text-white shadow-lg scale-[1.02]`
                   : `${light} hover:shadow-md hover:scale-[1.01]`
               }`}
@@ -228,7 +224,7 @@ export default function Prices() {
                   <p className="text-sm font-semibold mt-1 capitalize">{TREND_META[trend].label}</p>
                   <p className="text-[11px] opacity-70">{TREND_META[trend].labelHi}</p>
                 </div>
-                <Icon className={`w-8 h-8 opacity-60 ${selectedTrends.has(trend) ? "text-white" : ""}`} />
+                <Icon className={`w-8 h-8 opacity-60 ${selectedTrend === trend ? "text-white" : ""}`} />
               </div>
             </motion.button>
           ))}
