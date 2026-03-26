@@ -122,6 +122,37 @@ function loadVoices(): Promise<SpeechSynthesisVoice[]> {
   });
 }
 
+function splitIntoChunks(text: string, maxLen = 150): string[] {
+  const chunks: string[] = [];
+  const sentences = text.split(/(?<=[.!?।\n])\s+/);
+  let current = "";
+  for (const sentence of sentences) {
+    const joined = current ? `${current} ${sentence}` : sentence;
+    if (joined.length <= maxLen) {
+      current = joined;
+    } else {
+      if (current) chunks.push(current.trim());
+      if (sentence.length <= maxLen) {
+        current = sentence;
+      } else {
+        const words = sentence.split(" ");
+        current = "";
+        for (const word of words) {
+          const attempt = current ? `${current} ${word}` : word;
+          if (attempt.length <= maxLen) {
+            current = attempt;
+          } else {
+            if (current) chunks.push(current.trim());
+            current = word;
+          }
+        }
+      }
+    }
+  }
+  if (current.trim()) chunks.push(current.trim());
+  return chunks.filter(Boolean);
+}
+
 export default function AIAssistant() {
   const { t } = useLang();
   const [messages, setMessages] = useState<Message[]>([
@@ -148,6 +179,8 @@ export default function AIAssistant() {
 
   const resumeTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastSpokenRef = useRef<string | null>(null);
+  const kannadaAudioRef = useRef<HTMLAudioElement | null>(null);
+  const kannadaActiveRef = useRef(false);
 
   const stopSpeaking = useCallback(() => {
     if (resumeTimerRef.current) {
@@ -155,21 +188,67 @@ export default function AIAssistant() {
       resumeTimerRef.current = null;
     }
     window.speechSynthesis.cancel();
+    kannadaActiveRef.current = false;
+    if (kannadaAudioRef.current) {
+      kannadaAudioRef.current.pause();
+      kannadaAudioRef.current = null;
+    }
+    setSpeakingMsgId(null);
+  }, []);
+
+  const speakKannada = useCallback(async (text: string, msgId: string) => {
+    kannadaActiveRef.current = true;
+    setSpeakingMsgId(msgId);
+    const chunks = splitIntoChunks(text, 150);
+
+    for (const chunk of chunks) {
+      if (!kannadaActiveRef.current) break;
+      try {
+        const res = await fetch(
+          `${BASE}/api/tts?lang=kn&text=${encodeURIComponent(chunk)}`
+        );
+        if (!res.ok || !kannadaActiveRef.current) break;
+        const blob = await res.blob();
+        if (!kannadaActiveRef.current) break;
+        const url = URL.createObjectURL(blob);
+        await new Promise<void>((resolve) => {
+          const audio = new Audio(url);
+          kannadaAudioRef.current = audio;
+          audio.onended = () => { URL.revokeObjectURL(url); resolve(); };
+          audio.onerror = () => { URL.revokeObjectURL(url); resolve(); };
+          audio.play().catch(() => { URL.revokeObjectURL(url); resolve(); });
+        });
+      } catch {
+        break;
+      }
+    }
+
+    kannadaActiveRef.current = false;
+    kannadaAudioRef.current = null;
     setSpeakingMsgId(null);
   }, []);
 
   const speakText = useCallback(async (text: string, lang: string, msgId: string) => {
-    if (!window.speechSynthesis) return;
+    const clean = stripMarkdown(text);
+    if (!clean) return;
 
     if (resumeTimerRef.current) {
       clearInterval(resumeTimerRef.current);
       resumeTimerRef.current = null;
     }
     window.speechSynthesis.cancel();
+    kannadaActiveRef.current = false;
+    if (kannadaAudioRef.current) {
+      kannadaAudioRef.current.pause();
+      kannadaAudioRef.current = null;
+    }
 
-    const clean = stripMarkdown(text);
-    if (!clean) return;
+    if (lang === "kn-IN") {
+      await speakKannada(clean, msgId);
+      return;
+    }
 
+    if (!window.speechSynthesis) return;
     const voices = await loadVoices();
     const voice = pickFeminineVoice(lang, voices);
 
@@ -194,11 +273,9 @@ export default function AIAssistant() {
     window.speechSynthesis.speak(utter);
 
     resumeTimerRef.current = setInterval(() => {
-      if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume();
-      }
+      if (window.speechSynthesis.paused) window.speechSynthesis.resume();
     }, 5000);
-  }, []);
+  }, [speakKannada]);
 
   useEffect(() => {
     return () => {
