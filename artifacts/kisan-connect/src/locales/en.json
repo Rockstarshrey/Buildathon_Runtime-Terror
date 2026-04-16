@@ -5,14 +5,12 @@
   "nav.community": "Community",
   "nav.ai_assistant": "AI Assistant",
   "nav.agrigo": "AgriGo",
-
   "hero.badge": "Empowering Farmers",
   "hero.h1_1": "Smart farming,",
   "hero.h1_2": "better futures.",
   "hero.subtitle": "Get live mandi prices, connect with fellow farmers, and receive AI-driven crop advice in your language.",
   "hero.btn_prices": "Check Prices",
   "hero.btn_ai": "Ask AI",
-
   "card.mandi.title": "Mandi Prices",
   "card.mandi.desc": "Live crop rates updated daily across major markets",
   "card.mandi.stat_label": "tracked live",
@@ -22,19 +20,16 @@
   "card.community.title": "Community",
   "card.community.desc": "Share tips, ask questions, connect with local farmers",
   "card.community.stat_label": "farmers online",
-
   "banner.ai_powered": "AI POWERED",
   "banner.title": "KisanMitra AI — Your Crop Advisor",
   "banner.desc": "Ask in English or Hindi. Get expert farming advice instantly.",
   "banner.ask_btn": "Ask KisanMitra",
-
   "weather.title": "Local Weather",
   "weather.partly_cloudy": "Partly Cloudy",
   "weather.today": "Today",
   "weather.tomorrow": "Tmrw",
   "weather.thu": "Thu",
   "weather.fri": "Fri",
-
   "news.title": "Agriculture News",
   "news.view_all": "View All",
   "news.item1.title": "Monsoon expected to arrive early in Central India",
@@ -43,7 +38,6 @@
   "news.item2.tag": "Policy",
   "news.item3.title": "Govt increases subsidy on organic fertilizers by 15%",
   "news.item3.tag": "Subsidy",
-
   "prices.title": "Mandi Prices",
   "prices.subtitle": "Real-time wholesale crop rates from major mandis across India — updated daily.",
   "prices.live_badge": "Live Market Data",
@@ -69,7 +63,6 @@
   "prices.col_range": "Range",
   "prices.col_trend": "Trend",
   "prices.col_date": "Date",
-
   "schemes.title": "Government Schemes",
   "schemes.subtitle": "Discover financial support, insurance, and resources provided by the government to help grow your farming business.",
   "schemes.loading": "Loading schemes…",
@@ -77,7 +70,6 @@
   "schemes.eligibility": "Eligibility",
   "schemes.apply_now": "Apply Now",
   "schemes.visit_portal": "Visit Portal",
-
   "community.title": "Farmer Community",
   "community.subtitle": "Connect with farmers across India",
   "community.loading": "Loading posts…",
@@ -85,19 +77,19 @@
   "community.reply": "Reply",
   "community.like": "Like",
   "community.write_post": "Write a post…",
-
   "ai.title": "AI Crop Advisor",
   "ai.placeholder": "Ask about crops, pests, weather, schemes…",
   "ai.new_chat": "New Chat",
   "ai.send": "Send",
   "ai.lang_en": "English",
   "ai.lang_hi": "हिन्दी",
-
   "footer.copy": "Empowering Indian Farmers.",
   "footer.copy_hi": "किसान कनेक्ट — भारतीय किसानों का सशक्तिकरण",
-
   "lang.select": "Language",
   "lang.en": "English",
   "lang.hi": "हिन्दी",
-  "lang.kn": "ಕನ್ನಡ"
+  "lang.kn": "ಕನ್ನಡ",
+  "card.ai.title": "KisanMitra AI",
+  "card.ai.desc": "Ask crop advice in your language, voice or text",
+  "card.ai.stat_label": "supported"
 }
