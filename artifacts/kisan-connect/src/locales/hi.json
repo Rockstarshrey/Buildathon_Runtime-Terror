@@ -5,12 +5,14 @@
   "nav.community": "समुदाय",
   "nav.ai_assistant": "एआई सहायक",
   "nav.agrigo": "एग्रीगो",
+
   "hero.badge": "किसानों का सशक्तिकरण",
   "hero.h1_1": "स्मार्ट खेती,",
   "hero.h1_2": "बेहतर भविष्य।",
   "hero.subtitle": "लाइव मंडी भाव प्राप्त करें, साथी किसानों से जुड़ें, और अपनी भाषा में फसल सलाह प्राप्त करें।",
   "hero.btn_prices": "भाव देखें",
   "hero.btn_ai": "एआई से पूछें",
+
   "card.mandi.title": "मंडी भाव",
   "card.mandi.desc": "प्रमुख बाजारों में दैनिक अपडेट होने वाले फसल भाव",
   "card.mandi.stat_label": "लाइव ट्रैक",
@@ -20,16 +22,19 @@
   "card.community.title": "किसान समुदाय",
   "card.community.desc": "सुझाव साझा करें, सवाल पूछें, स्थानीय किसानों से जुड़ें",
   "card.community.stat_label": "किसान ऑनलाइन",
+
   "banner.ai_powered": "एआई संचालित",
   "banner.title": "किसानमित्र एआई — आपका फसल सलाहकार",
   "banner.desc": "हिंदी या अंग्रेजी में पूछें। तुरंत विशेषज्ञ सलाह पाएं।",
   "banner.ask_btn": "किसानमित्र से पूछें",
+
   "weather.title": "स्थानीय मौसम",
   "weather.partly_cloudy": "आंशिक बादल",
   "weather.today": "आज",
   "weather.tomorrow": "कल",
   "weather.thu": "गुरु",
   "weather.fri": "शुक्र",
+
   "news.title": "कृषि समाचार",
   "news.view_all": "सभी देखें",
   "news.item1.title": "मध्य भारत में मानसून जल्दी आने की संभावना",
@@ -38,6 +43,7 @@
   "news.item2.tag": "नीति",
   "news.item3.title": "सरकार ने जैविक खाद पर सब्सिडी 15% बढ़ाई",
   "news.item3.tag": "सब्सिडी",
+
   "prices.title": "मंडी भाव",
   "prices.subtitle": "भारत भर की प्रमुख मंडियों से वास्तविक समय थोक फसल दरें — प्रतिदिन अपडेट।",
   "prices.live_badge": "लाइव बाजार डेटा",
@@ -63,6 +69,7 @@
   "prices.col_range": "सीमा",
   "prices.col_trend": "रुझान",
   "prices.col_date": "तारीख",
+
   "schemes.title": "सरकारी योजनाएं",
   "schemes.subtitle": "सरकार द्वारा प्रदान की गई वित्तीय सहायता, बीमा और संसाधन खोजें।",
   "schemes.loading": "योजनाएं लोड हो रही हैं…",
@@ -70,6 +77,7 @@
   "schemes.eligibility": "पात्रता",
   "schemes.apply_now": "अभी आवेदन करें",
   "schemes.visit_portal": "पोर्टल पर जाएं",
+
   "community.title": "किसान समुदाय",
   "community.subtitle": "भारत भर के किसानों से जुड़ें",
   "community.loading": "पोस्ट लोड हो रहे हैं…",
@@ -77,19 +85,19 @@
   "community.reply": "जवाब दें",
   "community.like": "पसंद",
   "community.write_post": "पोस्ट लिखें…",
+
   "ai.title": "एआई फसल सलाहकार",
   "ai.placeholder": "फसल, कीट, मौसम, योजना के बारे में पूछें…",
   "ai.new_chat": "नई चैट",
   "ai.send": "भेजें",
   "ai.lang_en": "English",
   "ai.lang_hi": "हिन्दी",
+
   "footer.copy": "भारतीय किसानों का सशक्तिकरण।",
   "footer.copy_hi": "किसान कनेक्ट — भारतीय किसानों का सशक्तिकरण",
+
   "lang.select": "भाषा",
   "lang.en": "English",
   "lang.hi": "हिन्दी",
-  "lang.kn": "ಕನ್ನಡ",
-  "card.ai.title": "किसान मित्र AI",
-  "card.ai.desc": "अपनी भाषा में फसल सलाह लें, आवाज़ या टेक्स्ट",
-  "card.ai.stat_label": "भाषाएं"
+  "lang.kn": "ಕನ್ನಡ"
 }

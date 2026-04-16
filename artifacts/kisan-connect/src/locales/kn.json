@@ -5,12 +5,14 @@
   "nav.community": "ಸಮುದಾಯ",
   "nav.ai_assistant": "ಎಐ ಸಹಾಯಕ",
   "nav.agrigo": "ಅಗ್ರಿಗೋ",
+
   "hero.badge": "ರೈತರ ಸಬಲೀಕರಣ",
   "hero.h1_1": "ಸ್ಮಾರ್ಟ್ ಕೃಷಿ,",
   "hero.h1_2": "ಉತ್ತಮ ಭವಿಷ್ಯ.",
   "hero.subtitle": "ನೇರ ಮಂಡಿ ಬೆಲೆಗಳನ್ನು ಪಡೆಯಿರಿ, ರೈತರೊಂದಿಗೆ ಸಂಪರ್ಕಿಸಿ, ಮತ್ತು ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಬೆಳೆ ಸಲಹೆ ಪಡೆಯಿರಿ.",
   "hero.btn_prices": "ಬೆಲೆ ನೋಡಿ",
   "hero.btn_ai": "ಎಐ ಕೇಳಿ",
+
   "card.mandi.title": "ಮಂಡಿ ಬೆಲೆಗಳು",
   "card.mandi.desc": "ಪ್ರಮುಖ ಮಾರುಕಟ್ಟೆಗಳಲ್ಲಿ ದೈನಂದಿನ ಬೆಳೆ ದರ",
   "card.mandi.stat_label": "ಲೈವ್ ಟ್ರ್ಯಾಕ್",
@@ -20,16 +22,19 @@
   "card.community.title": "ರೈತ ಸಮುದಾಯ",
   "card.community.desc": "ಸಲಹೆ ಹಂಚಿಕೊಳ್ಳಿ, ಪ್ರಶ್ನೆ ಕೇಳಿ, ಸ್ಥಳೀಯ ರೈತರೊಂದಿಗೆ ಸಂಪರ್ಕಿಸಿ",
   "card.community.stat_label": "ರೈತರು ಆನ್‌ಲೈನ್",
+
   "banner.ai_powered": "ಎಐ ಚಾಲಿತ",
   "banner.title": "ಕಿಸಾನ್‌ಮಿತ್ರ ಎಐ — ನಿಮ್ಮ ಬೆಳೆ ಸಲಹೆಗಾರ",
   "banner.desc": "ಕನ್ನಡ ಅಥವಾ ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ಕೇಳಿ. ತಕ್ಷಣ ತಜ್ಞ ಸಲಹೆ ಪಡೆಯಿರಿ.",
   "banner.ask_btn": "ಕಿಸಾನ್‌ಮಿತ್ರ ಕೇಳಿ",
+
   "weather.title": "ಸ್ಥಳೀಯ ಹವಾಮಾನ",
   "weather.partly_cloudy": "ಭಾಗಶಃ ಮೋಡ",
   "weather.today": "ಇಂದು",
   "weather.tomorrow": "ನಾಳೆ",
   "weather.thu": "ಗುರು",
   "weather.fri": "ಶುಕ್ರ",
+
   "news.title": "ಕೃಷಿ ಸುದ್ದಿ",
   "news.view_all": "ಎಲ್ಲ ನೋಡಿ",
   "news.item1.title": "ಮಧ್ಯ ಭಾರತದಲ್ಲಿ ಮಳೆಗಾಲ ಬೇಗ ಬರುವ ನಿರೀಕ್ಷೆ",
@@ -38,6 +43,7 @@
   "news.item2.tag": "ನೀತಿ",
   "news.item3.title": "ಸರ್ಕಾರ ಜೈವಿಕ ಗೊಬ್ಬರ ಸಬ್ಸಿಡಿ 15% ಹೆಚ್ಚಿಸಿದೆ",
   "news.item3.tag": "ಸಬ್ಸಿಡಿ",
+
   "prices.title": "ಮಂಡಿ ಬೆಲೆಗಳು",
   "prices.subtitle": "ಭಾರತದ ಪ್ರಮುಖ ಮಂಡಿಗಳಿಂದ ನೇರ ಸಗಟು ಬೆಳೆ ದರಗಳು — ದಿನಕ್ಕೊಮ್ಮೆ ನವೀಕರಿಸಲಾಗಿದೆ.",
   "prices.live_badge": "ಲೈವ್ ಮಾರುಕಟ್ಟೆ ಡೇಟಾ",
@@ -63,6 +69,7 @@
   "prices.col_range": "ವ್ಯಾಪ್ತಿ",
   "prices.col_trend": "ಟ್ರೆಂಡ್",
   "prices.col_date": "ದಿನಾಂಕ",
+
   "schemes.title": "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು",
   "schemes.subtitle": "ನಿಮ್ಮ ಕೃಷಿ ವ್ಯವಹಾರ ಬೆಳೆಯಲು ಸರ್ಕಾರ ಒದಗಿಸಿರುವ ಆರ್ಥಿಕ ಸಹಾಯ, ವಿಮೆ ಮತ್ತು ಸಂಪನ್ಮೂಲಗಳನ್ನು ಕಂಡುಕೊಳ್ಳಿ.",
   "schemes.loading": "ಯೋಜನೆಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ…",
@@ -70,6 +77,7 @@
   "schemes.eligibility": "ಅರ್ಹತೆ",
   "schemes.apply_now": "ಈಗ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ",
   "schemes.visit_portal": "ಪೋರ್ಟಲ್ ಭೇಟಿ",
+
   "community.title": "ರೈತ ಸಮುದಾಯ",
   "community.subtitle": "ಭಾರತ ಉದ್ದಕ್ಕೂ ರೈತರೊಂದಿಗೆ ಸಂಪರ್ಕಿಸಿ",
   "community.loading": "ಪೋಸ್ಟ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ…",
@@ -77,19 +85,19 @@
   "community.reply": "ಉತ್ತರ",
   "community.like": "ಇಷ್ಟ",
   "community.write_post": "ಪೋಸ್ಟ್ ಬರೆಯಿರಿ…",
+
   "ai.title": "ಎಐ ಬೆಳೆ ಸಲಹೆಗಾರ",
   "ai.placeholder": "ಬೆಳೆ, ಕೀಟ, ಹವಾಮಾನ, ಯೋಜನೆಗಳ ಬಗ್ಗೆ ಕೇಳಿ…",
   "ai.new_chat": "ಹೊಸ ಚಾಟ್",
   "ai.send": "ಕಳುಹಿಸಿ",
   "ai.lang_en": "English",
   "ai.lang_hi": "ಕನ್ನಡ",
+
   "footer.copy": "ಭಾರತೀಯ ರೈತರ ಸಬಲೀಕರಣ.",
   "footer.copy_hi": "ಕಿಸಾನ್ ಕನೆಕ್ಟ್ — ಭಾರತೀಯ ರೈತರ ಸಬಲೀಕರಣ",
+
   "lang.select": "ಭಾಷೆ",
   "lang.en": "English",
   "lang.hi": "हिन्दी",
-  "lang.kn": "ಕನ್ನಡ",
-  "card.ai.title": "ಕಿಸಾನ್ ಮಿತ್ರ AI",
-  "card.ai.desc": "ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಬೆಳೆ ಸಲಹೆ ಪಡೆಯಿರಿ",
-  "card.ai.stat_label": "ಭಾಷೆಗಳು"
+  "lang.kn": "ಕನ್ನಡ"
 }
