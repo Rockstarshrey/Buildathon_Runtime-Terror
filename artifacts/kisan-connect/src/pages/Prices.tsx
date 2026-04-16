@@ -11,12 +11,10 @@ import {
   Loader2,
   SlidersHorizontal,
   X,
-  ArrowUpDown,
   ChevronDown,
   ChevronUp,
-  BarChart3,
-  Globe,
   Activity,
+  Phone,
   RefreshCw,
 } from "lucide-react";
 import { useGetMandiPrices } from "@workspace/api-client-react";
@@ -42,27 +40,42 @@ const CROP_EMOJI: Record<string, string> = {
   Banana: "🍌", Apple: "🍎", Cauliflower: "🥦", Spinach: "🥬", Garlic: "🧄",
 };
 
-const TREND_META: Record<Trend, { label: string; labelHi: string; icon: React.ReactNode; rowBorder: string; badge: string; priceCls: string }> = {
+const CROP_IMAGE: Record<string, string> = {
+  Wheat: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&auto=format&fit=crop",
+  Rice: "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=400&auto=format&fit=crop",
+  Tomato: "https://images.unsplash.com/photo-1558818498-28c1e002b655?w=400&auto=format&fit=crop",
+  Onion: "https://images.unsplash.com/photo-1518977956812-cd3dbadaaf31?w=400&auto=format&fit=crop",
+  Potato: "https://images.unsplash.com/photo-1518977676405-d674f104c8f5?w=400&auto=format&fit=crop",
+  Cotton: "https://images.unsplash.com/photo-1569498455476-e4cca86ae57c?w=400&auto=format&fit=crop",
+  Sugarcane: "https://images.unsplash.com/photo-1607305387299-a3d9611cd469?w=400&auto=format&fit=crop",
+  Maize: "https://images.unsplash.com/photo-1601593768799-76e0fc0efba6?w=400&auto=format&fit=crop",
+  Banana: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&auto=format&fit=crop",
+  Apple: "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?w=400&auto=format&fit=crop",
+  Spinach: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=400&auto=format&fit=crop",
+  Garlic: "https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?w=400&auto=format&fit=crop",
+};
+
+const TREND_META: Record<Trend, { label: string; icon: React.ReactNode; badge: string; priceCls: string; dot: string }> = {
   up: {
-    label: "Rising", labelHi: "बढ़त",
+    label: "Rising",
     icon: <TrendingUp className="w-3.5 h-3.5" />,
-    rowBorder: "border-l-4 border-l-emerald-400",
     badge: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",
     priceCls: "text-emerald-700",
+    dot: "bg-emerald-500",
   },
   down: {
-    label: "Falling", labelHi: "गिरावट",
+    label: "Falling",
     icon: <TrendingDown className="w-3.5 h-3.5" />,
-    rowBorder: "border-l-4 border-l-rose-400",
     badge: "bg-rose-50 text-rose-700 ring-1 ring-rose-200",
     priceCls: "text-rose-600",
+    dot: "bg-rose-500",
   },
   stable: {
-    label: "Stable", labelHi: "स्थिर",
+    label: "Stable",
     icon: <Minus className="w-3.5 h-3.5" />,
-    rowBorder: "border-l-4 border-l-amber-400",
     badge: "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
     priceCls: "text-amber-700",
+    dot: "bg-amber-500",
   },
 };
 
@@ -73,9 +86,24 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "crop-za", label: "Crop: Z → A" },
 ];
 
+function CropChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-150 whitespace-nowrap ${
+        active
+          ? "bg-primary text-white border-primary shadow-sm shadow-primary/30"
+          : "bg-white text-muted-foreground border-border hover:border-primary/50 hover:text-primary"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
 export default function Prices() {
   const { t } = useLang();
-  const { data: prices, isLoading } = useGetMandiPrices();
+  const { data: prices, isLoading, refetch } = useGetMandiPrices();
 
   const [search, setSearch] = useState("");
   const [selectedCrop, setSelectedCrop] = useState<string>("all");
@@ -83,7 +111,7 @@ export default function Prices() {
   const [selectedTrend, setSelectedTrend] = useState<Trend | null>(null);
   const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>("price-high");
-  const [filtersOpen, setFiltersOpen] = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const { crops, states, globalMin, globalMax } = useMemo(() => {
     if (!prices) return { crops: [], states: [], globalMin: 0, globalMax: 10000 };
@@ -152,59 +180,47 @@ export default function Prices() {
   const stableCount  = prices?.filter(p => p.trend === "stable").length ?? 0;
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-slate-50 via-green-50/40 to-amber-50/30">
+    <div className="min-h-full">
 
-      {/* ── Hero Banner ───────────────────────────────────────── */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-green-900 via-emerald-800 to-teal-800 pt-10 pb-16 px-4 sm:px-6 lg:px-8">
-        {/* decorative blobs */}
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-emerald-400/10 blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-teal-300/10 blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
-
+      {/* ── Header ───────────────────────────────────────── */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#1B5E20] via-[#2E7D32] to-[#43A047] pt-8 pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 -translate-y-1/3 translate-x-1/3 pointer-events-none" />
         <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/30 text-emerald-200 text-xs font-bold mb-4 tracking-widest uppercase">
+          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/30 text-emerald-200 text-xs font-bold mb-3 tracking-widest uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               {t("prices.live_badge")}
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-              <div>
-                <h1 className="text-4xl lg:text-5xl font-display font-extrabold text-white leading-tight">
-                  {t("prices.title")}
-                </h1>
-                <p className="text-emerald-100/70 text-sm mt-2 max-w-lg">
-                  {t("prices.subtitle")}
-                </p>
-              </div>
+            <h1 className="text-3xl sm:text-4xl font-display font-bold text-white">{t("prices.title")}</h1>
+            <p className="text-emerald-100/70 text-sm mt-1 mb-6 max-w-lg">{t("prices.subtitle")}</p>
 
-              {/* Stat pills */}
-              <div className="flex flex-wrap gap-3">
-                {[
-                  { icon: BarChart3, label: `${prices?.length ?? "–"} ${t("prices.markets")}`, sub: t("prices.tracked_today"), color: "bg-white/10 text-white" },
-                  { icon: Globe, label: `${states.length} States`, sub: t("prices.states_covered"), color: "bg-white/10 text-white" },
-                  { icon: Activity, label: `${risingCount} Rising`, sub: t("prices.rising_today"), color: "bg-emerald-400/20 text-emerald-200" },
-                ].map((s) => (
-                  <div key={s.label} className={`flex items-center gap-2.5 ${s.color} backdrop-blur rounded-2xl px-4 py-2.5 border border-white/10`}>
-                    <s.icon className="w-4 h-4 opacity-80" />
-                    <div>
-                      <p className="font-bold text-sm leading-tight">{s.label}</p>
-                      <p className="text-[11px] opacity-60">{s.sub}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            {/* Search Bar */}
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={t("prices.search_placeholder")}
+                className="pl-12 pr-10 h-14 bg-white rounded-2xl border-0 shadow-lg text-base focus-visible:ring-primary/30 transition-all"
+              />
+              {search && (
+                <button onClick={() => setSearch("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
           </motion.div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 pb-8">
 
-        {/* ── Trend Summary Cards ──────────────────────────────── */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
+        {/* ── Trend Summary Pills ──────────────────────────── */}
+        <div className="grid grid-cols-3 gap-3 mb-5">
           {[
-            { trend: "up" as Trend, count: risingCount, icon: TrendingUp, bg: "from-emerald-500 to-green-600", light: "bg-emerald-50 text-emerald-700" },
-            { trend: "down" as Trend, count: fallingCount, icon: TrendingDown, bg: "from-rose-500 to-red-600", light: "bg-rose-50 text-rose-700" },
-            { trend: "stable" as Trend, count: stableCount, icon: Minus, bg: "from-amber-500 to-orange-500", light: "bg-amber-50 text-amber-700" },
+            { trend: "up" as Trend, count: risingCount, icon: TrendingUp, bg: "from-emerald-500 to-green-600", light: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+            { trend: "down" as Trend, count: fallingCount, icon: TrendingDown, bg: "from-rose-500 to-red-600", light: "bg-rose-50 text-rose-700 border-rose-200" },
+            { trend: "stable" as Trend, count: stableCount, icon: Minus, bg: "from-amber-500 to-orange-500", light: "bg-amber-50 text-amber-700 border-amber-200" },
           ].map(({ trend, count, icon: Icon, bg, light }) => (
             <motion.button
               key={trend}
@@ -212,9 +228,9 @@ export default function Prices() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 * (["up","down","stable"].indexOf(trend)) }}
               onClick={() => toggleTrend(trend)}
-              className={`relative overflow-hidden rounded-2xl p-4 shadow-md text-left transition-all duration-200 ${
+              className={`relative overflow-hidden rounded-2xl p-4 border text-left transition-all duration-200 shadow-sm ${
                 selectedTrend === trend
-                  ? `bg-gradient-to-br ${bg} text-white shadow-lg scale-[1.02]`
+                  ? `bg-gradient-to-br ${bg} text-white border-transparent shadow-md scale-[1.02]`
                   : `${light} hover:shadow-md hover:scale-[1.01]`
               }`}
             >
@@ -222,33 +238,17 @@ export default function Prices() {
                 <div>
                   <p className="text-2xl font-display font-bold leading-none">{count}</p>
                   <p className="text-sm font-semibold mt-1 capitalize">{TREND_META[trend].label}</p>
-                  <p className="text-[11px] opacity-70">{TREND_META[trend].labelHi}</p>
                 </div>
-                <Icon className={`w-8 h-8 opacity-60 ${selectedTrend === trend ? "text-white" : ""}`} />
+                <Icon className={`w-7 h-7 opacity-60`} />
               </div>
             </motion.button>
           ))}
         </div>
 
-        {/* ── Search + Sort row ────────────────────────────────── */}
+        {/* ── Sort + Filter bar ───────────────────────────── */}
         <div className="flex gap-3 mb-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t("prices.search_placeholder")}
-              className="pl-12 pr-10 h-12 bg-white rounded-2xl border-border/80 shadow-sm text-base focus-visible:ring-primary/30 focus-visible:border-primary/60 transition-all"
-            />
-            {search && (
-              <button onClick={() => setSearch("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
           <Select value={sortKey} onValueChange={(v) => setSortKey(v as SortKey)}>
-            <SelectTrigger className="w-52 rounded-2xl border-border/80 bg-white shadow-sm h-12 shrink-0">
-              <ArrowUpDown className="w-4 h-4 mr-2 text-muted-foreground" />
+            <SelectTrigger className="flex-1 rounded-2xl border-border/80 bg-white shadow-sm h-12">
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
@@ -257,128 +257,112 @@ export default function Prices() {
               ))}
             </SelectContent>
           </Select>
-        </div>
 
-        {/* ── Filter Panel ─────────────────────────────────────── */}
-        <div className="bg-white/80 backdrop-blur rounded-2xl border border-border/50 shadow-sm mb-4 overflow-hidden">
           <button
             onClick={() => setFiltersOpen(v => !v)}
-            className="w-full flex items-center justify-between px-5 py-4 text-sm font-semibold text-foreground hover:bg-muted/30 transition-colors"
+            className={`flex items-center gap-2 px-4 h-12 rounded-2xl border font-semibold text-sm shadow-sm transition-all duration-200 ${
+              hasActiveFilters ? "bg-primary text-white border-primary" : "bg-white text-foreground border-border hover:border-primary/50"
+            }`}
           >
-            <span className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
-                <SlidersHorizontal className="w-4 h-4 text-primary" />
-              </div>
-              {t("prices.filters")}
-              {hasActiveFilters && (
-                <span className="bg-primary text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full tracking-wide">
-                  {activeFilterTags.length} active
-                </span>
-              )}
-            </span>
-            <div className="flex items-center gap-2 text-muted-foreground text-xs">
-              <span>{filtered.length} / {prices?.length ?? 0} {t("prices.results")}</span>
-              {filtersOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            </div>
+            <SlidersHorizontal className="w-4 h-4" />
+            Filters
+            {hasActiveFilters && (
+              <span className="bg-white text-primary text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center">
+                {activeFilterTags.length}
+              </span>
+            )}
+            {filtersOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
 
-          <AnimatePresence initial={false}>
-            {filtersOpen && (
-              <motion.div
-                key="filters"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.22 }}
-                className="overflow-hidden"
-              >
-                <div className="px-5 pb-5 border-t border-border/40 space-y-5 pt-4 bg-gradient-to-br from-green-50/60 to-white">
-
-                  {/* Crop chips with emojis */}
-                  <div>
-                    <p className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest mb-3">{t("prices.crop")}</p>
-                    <div className="flex flex-wrap gap-2">
-                      <CropChip label={t("prices.all")} active={selectedCrop === "all"} onClick={() => setSelectedCrop("all")} />
-                      {crops.map((crop) => (
-                        <CropChip
-                          key={crop}
-                          label={`${CROP_EMOJI[crop] ?? "🌱"} ${crop}`}
-                          active={selectedCrop === crop}
-                          onClick={() => setSelectedCrop(selectedCrop === crop ? "all" : crop)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                    {/* State */}
-                    <div>
-                      <p className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest mb-3">{t("prices.state")}</p>
-                      <Select value={selectedState} onValueChange={setSelectedState}>
-                        <SelectTrigger className="w-full rounded-xl border-border/80 bg-white h-10 text-sm shadow-sm">
-                          <MapPin className="w-3.5 h-3.5 mr-2 text-muted-foreground" />
-                          <SelectValue placeholder={t("prices.all_states")} />
-                        </SelectTrigger>
-                        <SelectContent className="rounded-xl">
-                          <SelectItem value="all">{t("prices.all_states")}</SelectItem>
-                          {states.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Price Range */}
-                    <div className="sm:col-span-2">
-                      <p className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest mb-3">
-                        {t("prices.price_range")}
-                        <span className="ml-2 text-primary font-bold normal-case tracking-normal text-xs">
-                          ₹{effectiveMin.toLocaleString("en-IN")} – ₹{effectiveMax.toLocaleString("en-IN")}
-                        </span>
-                      </p>
-                      <div className="px-1">
-                        <Slider
-                          min={globalMin} max={globalMax} step={100}
-                          value={[effectiveMin, effectiveMax]}
-                          onValueChange={([lo, hi]) => setPriceRange([lo, hi])}
-                          className="mb-3"
-                        />
-                        <div className="flex gap-3">
-                          <div className="flex-1">
-                            <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Min ₹</label>
-                            <Input type="number" min={globalMin} max={effectiveMax} step={100} value={effectiveMin}
-                              onChange={(e) => setPriceRange([Number(e.target.value), effectiveMax])}
-                              className="h-8 text-sm rounded-lg" />
-                          </div>
-                          <div className="flex-1">
-                            <label className="text-[10px] text-muted-foreground font-medium mb-1 block">Max ₹</label>
-                            <Input type="number" min={effectiveMin} max={globalMax} step={100} value={effectiveMax}
-                              onChange={(e) => setPriceRange([effectiveMin, Number(e.target.value)])}
-                              className="h-8 text-sm rounded-lg" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {hasActiveFilters && (
-                    <div className="flex justify-end">
-                      <Button variant="ghost" size="sm" onClick={clearAllFilters}
-                        className="text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl text-xs gap-1.5">
-                        <X className="w-3.5 h-3.5" /> {t("prices.clear_all")}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <button
+            onClick={() => refetch()}
+            className="w-12 h-12 rounded-2xl border border-border bg-white shadow-sm flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all"
+          >
+            <RefreshCw className="w-4 h-4" />
+          </button>
         </div>
 
-        {/* Active tags */}
+        {/* ── Filter Panel ────────────────────────────────── */}
+        <AnimatePresence initial={false}>
+          {filtersOpen && (
+            <motion.div
+              key="filters"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.22 }}
+              className="overflow-hidden mb-4"
+            >
+              <div className="bg-white rounded-3xl border border-border/50 shadow-sm p-5 space-y-5">
+                {/* Crop chips */}
+                <div>
+                  <p className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest mb-3">{t("prices.crop")}</p>
+                  <div className="flex flex-wrap gap-2">
+                    <CropChip label={t("prices.all")} active={selectedCrop === "all"} onClick={() => setSelectedCrop("all")} />
+                    {crops.map((crop) => (
+                      <CropChip
+                        key={crop}
+                        label={`${CROP_EMOJI[crop] ?? "🌱"} ${crop}`}
+                        active={selectedCrop === crop}
+                        onClick={() => setSelectedCrop(selectedCrop === crop ? "all" : crop)}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                  {/* State */}
+                  <div>
+                    <p className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest mb-3">{t("prices.state")}</p>
+                    <Select value={selectedState} onValueChange={setSelectedState}>
+                      <SelectTrigger className="w-full rounded-xl border-border/80 bg-white h-10 text-sm shadow-sm">
+                        <MapPin className="w-3.5 h-3.5 mr-2 text-muted-foreground" />
+                        <SelectValue placeholder={t("prices.all_states")} />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl">
+                        <SelectItem value="all">{t("prices.all_states")}</SelectItem>
+                        {states.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Price Range */}
+                  <div className="sm:col-span-2">
+                    <p className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest mb-3">
+                      {t("prices.price_range")}
+                      <span className="ml-2 text-primary font-bold normal-case tracking-normal text-xs">
+                        ₹{effectiveMin.toLocaleString("en-IN")} – ₹{effectiveMax.toLocaleString("en-IN")}
+                      </span>
+                    </p>
+                    <div className="px-1">
+                      <Slider
+                        min={globalMin} max={globalMax} step={100}
+                        value={[effectiveMin, effectiveMax]}
+                        onValueChange={([lo, hi]) => setPriceRange([lo, hi])}
+                        className="mb-3"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {hasActiveFilters && (
+                  <div className="flex justify-end">
+                    <Button variant="ghost" size="sm" onClick={clearAllFilters}
+                      className="text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl text-xs gap-1.5">
+                      <X className="w-3.5 h-3.5" /> {t("prices.clear_all")}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Active filter tags */}
         <AnimatePresence>
           {activeFilterTags.length > 0 && (
             <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
               className="flex flex-wrap gap-2 mb-4">
-              <span className="text-xs font-semibold text-muted-foreground self-center">{t("prices.active_filters")}</span>
               {activeFilterTags.map((tag) => (
                 <Badge key={tag.key} onClick={tag.onRemove}
                   className="flex items-center gap-1.5 pl-3 pr-2 py-1 rounded-full bg-primary/10 border border-primary/30 text-primary font-semibold text-xs cursor-pointer hover:bg-rose-50 hover:border-rose-300 hover:text-rose-600 transition-colors group">
@@ -390,164 +374,118 @@ export default function Prices() {
           )}
         </AnimatePresence>
 
-        {/* ── Table ────────────────────────────────────────────── */}
+        {/* Result count */}
+        <p className="text-sm text-muted-foreground font-medium mb-4">
+          Showing <span className="font-bold text-foreground">{filtered.length}</span> of {prices?.length ?? 0} listings
+        </p>
+
+        {/* ── Cards Grid ──────────────────────────────────── */}
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-28 gap-4">
             <Loader2 className="w-10 h-10 animate-spin text-primary" />
-            <p className="text-muted-foreground font-medium text-sm">{t("prices.loading")}</p>
+            <p className="text-muted-foreground font-medium">{t("prices.loading")}</p>
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center">
+              <Search className="w-7 h-7 opacity-40" />
+            </div>
+            <p className="font-bold text-base text-foreground">{t("prices.no_results")}</p>
+            <Button variant="outline" size="sm" onClick={clearAllFilters} className="rounded-2xl">
+              {t("prices.clear_all")}
+            </Button>
           </div>
         ) : (
-          <div className="relative rounded-3xl overflow-hidden shadow-lg border border-border/60">
-            {/* Inner white table card */}
-            <div className="relative overflow-hidden bg-white">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-muted/50 border-b border-border">
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">#</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">{t("prices.col_crop")}</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">{t("prices.col_market")}</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground">{t("prices.col_price")}</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground hidden sm:table-cell">{t("prices.col_range")}</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground text-center">{t("prices.col_trend")}</th>
-                      <th className="px-5 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap text-foreground text-right hidden md:table-cell">{t("prices.col_date")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filtered.length === 0 ? (
-                      <tr>
-                        <td colSpan={7} className="px-6 py-20 text-center">
-                          <div className="flex flex-col items-center gap-3 text-muted-foreground">
-                            <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center">
-                              <Search className="w-7 h-7 opacity-40" />
-                            </div>
-                            <p className="font-bold text-base text-foreground">{t("prices.no_results")}</p>
-                            <Button variant="outline" size="sm" onClick={clearAllFilters} className="mt-2 rounded-xl">
-                              {t("prices.clear_all")}
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ) : (
-                      <AnimatePresence mode="popLayout">
-                        {filtered.map((price, i) => {
-                          const trend = price.trend as Trend;
-                          const meta = TREND_META[trend];
-                          const emoji = CROP_EMOJI[price.crop] ?? "🌱";
-                          const isEven = i % 2 === 0;
-                          return (
-                            <motion.tr
-                              key={price.id}
-                              layout
-                              initial={{ opacity: 0, x: -8 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              exit={{ opacity: 0 }}
-                              transition={{ delay: Math.min(i * 0.025, 0.4) }}
-                              className={`group transition-colors duration-150 hover:bg-primary/5 ${meta.rowBorder} ${isEven ? "bg-white" : "bg-slate-50/60"}`}
-                            >
-                              {/* Row number */}
-                              <td className="px-5 py-4">
-                                <span className="w-7 h-7 rounded-full bg-muted/60 flex items-center justify-center text-xs font-bold text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                                  {i + 1}
-                                </span>
-                              </td>
-                              {/* Crop */}
-                              <td className="px-5 py-4">
-                                <div className="flex items-center gap-2.5">
-                                  <span className="text-2xl leading-none">{emoji}</span>
-                                  <div>
-                                    <div className="font-bold text-foreground leading-tight">{price.crop}</div>
-                                    <div className="text-xs font-medium text-primary mt-0.5">{price.cropHindi}</div>
-                                  </div>
-                                </div>
-                              </td>
-                              {/* Market */}
-                              <td className="px-5 py-4">
-                                <div className="flex items-center gap-1.5 font-semibold text-foreground text-sm">
-                                  <MapPin className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                                  {price.market}
-                                </div>
-                                <div className="text-xs text-muted-foreground mt-0.5 pl-5">{price.state}</div>
-                              </td>
-                              {/* Modal Price */}
-                              <td className="px-5 py-4">
-                                <div className={`text-xl font-display font-extrabold ${meta.priceCls} leading-tight`}>
-                                  ₹{price.modalPrice.toLocaleString("en-IN")}
-                                </div>
-                                <div className="text-[11px] text-muted-foreground">per {price.unit}</div>
-                              </td>
-                              {/* Range */}
-                              <td className="px-5 py-4 hidden sm:table-cell">
-                                <div className="text-sm font-medium text-muted-foreground whitespace-nowrap">
-                                  ₹{price.minPrice.toLocaleString("en-IN")}
-                                  <span className="mx-1 text-border">–</span>
-                                  ₹{price.maxPrice.toLocaleString("en-IN")}
-                                </div>
-                              </td>
-                              {/* Trend badge */}
-                              <td className="px-5 py-4 text-center">
-                                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${meta.badge}`}>
-                                  {meta.icon}
-                                  {meta.label}
-                                </span>
-                              </td>
-                              {/* Date */}
-                              <td className="px-5 py-4 text-right hidden md:table-cell">
-                                <span className="text-xs font-medium text-muted-foreground bg-muted/60 px-2.5 py-1 rounded-lg">
-                                  {format(new Date(price.date), "dd MMM yyyy")}
-                                </span>
-                              </td>
-                            </motion.tr>
-                          );
-                        })}
-                      </AnimatePresence>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <AnimatePresence mode="popLayout">
+              {filtered.map((price, i) => {
+                const trend = price.trend as Trend;
+                const meta = TREND_META[trend];
+                const emoji = CROP_EMOJI[price.crop] ?? "🌱";
+                const image = CROP_IMAGE[price.crop];
+                const dateStr = price.reportedDate
+                  ? format(new Date(price.reportedDate), "d MMM")
+                  : "";
 
-              {/* Table footer */}
-              {filtered.length > 0 && (
-                <div className="px-5 py-3 bg-gradient-to-r from-muted/40 to-muted/20 border-t border-border/50 flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-                    <RefreshCw className="w-3.5 h-3.5" />
-                    Showing <span className="text-foreground font-bold">{filtered.length}</span> of{" "}
-                    <span className="text-foreground font-bold">{prices?.length ?? 0}</span> entries
-                  </div>
-                  <div className="flex items-center gap-3 text-xs">
-                    {(["up","down","stable"] as Trend[]).map((t) => (
-                      <span key={t} className={`inline-flex items-center gap-1 font-semibold ${TREND_META[t].badge} px-2.5 py-1 rounded-full`}>
-                        {TREND_META[t].icon}
-                        {filtered.filter(p => p.trend === t).length} {TREND_META[t].label}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+                return (
+                  <motion.div
+                    key={price.id}
+                    layout
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ delay: Math.min(i * 0.02, 0.3) }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="bg-white rounded-3xl border border-border/50 shadow-sm hover:shadow-xl hover:shadow-black/8 transition-shadow duration-300 overflow-hidden flex flex-col"
+                  >
+                    {/* Crop Image */}
+                    <div className="relative h-36 bg-gradient-to-br from-green-50 to-emerald-50 overflow-hidden">
+                      {image ? (
+                        <img
+                          src={image}
+                          alt={price.crop}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-6xl">{emoji}</span>
+                        </div>
+                      )}
+                      {/* Trend badge */}
+                      <div className={`absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${meta.badge}`}>
+                        {meta.icon}
+                        {meta.label}
+                      </div>
+                      {/* Date */}
+                      {dateStr && (
+                        <div className="absolute bottom-3 left-3 bg-black/40 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                          {dateStr}
+                        </div>
+                      )}
+                    </div>
 
-            <div className="px-5 py-3 bg-muted/30 border-t border-border/40 flex items-center justify-between text-muted-foreground text-xs">
-              <span>Source: Agmarknet / eNAM · Prices in ₹ per quintal</span>
-              <span>Updated: {format(new Date(), "dd MMM yyyy")}</span>
-            </div>
+                    {/* Card Body */}
+                    <div className="p-4 flex flex-col flex-1">
+                      {/* Crop Name */}
+                      <div className="mb-3">
+                        <h3 className="font-display font-bold text-lg text-foreground leading-tight">
+                          {emoji} {price.crop}
+                        </h3>
+                        <p className="text-muted-foreground text-sm font-medium">{price.cropHindi}</p>
+                      </div>
+
+                      {/* Price */}
+                      <div className="mb-3">
+                        <div className={`text-3xl font-display font-bold ${meta.priceCls} leading-none`}>
+                          ₹{price.modalPrice.toLocaleString("en-IN")}
+                        </div>
+                        <p className="text-muted-foreground text-xs mt-0.5">per quintal · Modal price</p>
+                        <p className="text-muted-foreground text-xs">
+                          Min ₹{price.minPrice.toLocaleString("en-IN")} · Max ₹{price.maxPrice.toLocaleString("en-IN")}
+                        </p>
+                      </div>
+
+                      {/* Location */}
+                      <div className="flex items-center gap-1.5 text-muted-foreground text-sm mb-4">
+                        <MapPin className="w-4 h-4 shrink-0 text-primary" />
+                        <span className="font-medium truncate">{price.market}, {price.state}</span>
+                      </div>
+
+                      {/* Contact Button */}
+                      <button className="mt-auto w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 active:scale-[0.98] text-white font-semibold text-sm h-11 rounded-2xl shadow-sm shadow-primary/30 transition-all duration-200">
+                        <Phone className="w-4 h-4" />
+                        Contact Seller
+                      </button>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           </div>
         )}
+
       </div>
     </div>
-  );
-}
-
-function CropChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-150 whitespace-nowrap ${
-        active
-          ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
-          : "bg-white text-foreground border-border/70 hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
-      }`}
-    >
-      {label}
-    </button>
   );
 }

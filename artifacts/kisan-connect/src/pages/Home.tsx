@@ -2,90 +2,97 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import {
   TrendingUp,
-  Sprout,
-  CloudSun,
-  ArrowRight,
+  Bot,
   MessageSquare,
   ShieldCheck,
+  CloudSun,
   Wind,
   Droplets,
+  Search,
+  ArrowRight,
   Sun,
   Cloud,
   CloudRain,
   Newspaper,
-  Bot,
+  Tractor,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useLang } from "@/lib/i18n";
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 28 },
+  initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] },
 });
 
-const QUICK_CARDS = [
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Good Morning";
+  if (h < 17) return "Good Afternoon";
+  return "Good Evening";
+}
+
+const FEATURE_CARDS = [
   {
     href: "/prices",
-    translKey: "mandi",
     icon: TrendingUp,
-    stat: "10 markets",
-    gradient: "from-amber-400 via-orange-400 to-rose-400",
-    glow: "shadow-amber-400/40",
-    bg: "from-amber-50 to-orange-50",
-    iconBg: "bg-amber-400/15",
-    iconColor: "text-amber-600",
-    accent: "text-amber-600",
+    label: "Market Prices",
+    labelHi: "मंडी भाव",
+    iconBg: "bg-emerald-100",
+    iconColor: "text-emerald-700",
+    cardBg: "from-emerald-50 to-green-50",
+    border: "border-emerald-200/60",
     tag: "LIVE",
-    tagColor: "bg-amber-100 text-amber-700",
-    decorShape: "M0,0 L120,0 L120,80 Q60,110 0,80 Z",
-    shapeColor: "fill-amber-400/10",
+    tagColor: "bg-emerald-100 text-emerald-700",
   },
   {
-    href: "/schemes",
-    translKey: "schemes",
-    icon: ShieldCheck,
-    stat: "₹6,000+",
-    gradient: "from-blue-500 via-indigo-500 to-violet-500",
-    glow: "shadow-blue-400/40",
-    bg: "from-blue-50 to-indigo-50",
-    iconBg: "bg-blue-500/15",
-    iconColor: "text-blue-600",
-    accent: "text-blue-600",
-    tag: "6 SCHEMES",
+    href: "/ai-assistant",
+    icon: Bot,
+    label: "KisanMitra AI",
+    labelHi: "AI सहायक",
+    iconBg: "bg-blue-100",
+    iconColor: "text-blue-700",
+    cardBg: "from-blue-50 to-sky-50",
+    border: "border-blue-200/60",
+    tag: "AI",
     tagColor: "bg-blue-100 text-blue-700",
-    decorShape: "M120,0 L0,0 L0,80 Q60,110 120,80 Z",
-    shapeColor: "fill-blue-400/10",
   },
   {
     href: "/community",
-    translKey: "community",
     icon: MessageSquare,
-    stat: "500+",
-    gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
-    glow: "shadow-purple-400/40",
-    bg: "from-violet-50 to-purple-50",
-    iconBg: "bg-violet-500/15",
-    iconColor: "text-violet-600",
-    accent: "text-violet-600",
-    tag: "ACTIVE",
+    label: "Community",
+    labelHi: "समुदाय",
+    iconBg: "bg-violet-100",
+    iconColor: "text-violet-700",
+    cardBg: "from-violet-50 to-purple-50",
+    border: "border-violet-200/60",
+    tag: "500+",
     tagColor: "bg-violet-100 text-violet-700",
-    decorShape: "M0,0 L120,0 L120,80 Q60,110 0,80 Z",
-    shapeColor: "fill-violet-400/10",
+  },
+  {
+    href: "/schemes",
+    icon: ShieldCheck,
+    label: "Gov't Schemes",
+    labelHi: "सरकारी योजनाएं",
+    iconBg: "bg-amber-100",
+    iconColor: "text-amber-700",
+    cardBg: "from-amber-50 to-orange-50",
+    border: "border-amber-200/60",
+    tag: "₹6000+",
+    tagColor: "bg-amber-100 text-amber-700",
   },
 ];
 
-const FORECAST_KEYS = [
-  { dayKey: "weather.today", icon: CloudSun, hi: 32, lo: 21, color: "text-amber-500" },
-  { dayKey: "weather.tomorrow", icon: Cloud, hi: 29, lo: 19, color: "text-slate-400" },
-  { dayKey: "weather.thu", icon: CloudRain, hi: 25, lo: 18, color: "text-sky-500" },
-  { dayKey: "weather.fri", icon: Sun, hi: 33, lo: 22, color: "text-amber-400" },
+const FORECAST = [
+  { day: "Today", icon: CloudSun, hi: 32, lo: 21, color: "text-amber-500" },
+  { day: "Tmrw", icon: Cloud, hi: 29, lo: 19, color: "text-slate-400" },
+  { day: "Thu", icon: CloudRain, hi: 25, lo: 18, color: "text-sky-500" },
+  { day: "Fri", icon: Sun, hi: 33, lo: 22, color: "text-amber-400" },
 ];
 
-const NEWS_KEYS = [
-  { titleKey: "news.item1.title", tagKey: "news.item1.tag", date: "2h", tagColor: "bg-sky-100 text-sky-700" },
-  { titleKey: "news.item2.title", tagKey: "news.item2.tag", date: "5h", tagColor: "bg-green-100 text-green-700" },
-  { titleKey: "news.item3.title", tagKey: "news.item3.tag", date: "1d", tagColor: "bg-amber-100 text-amber-700" },
+const NEWS_ITEMS = [
+  { titleKey: "news.item1.title", tagKey: "news.item1.tag", date: "2h ago", tagColor: "bg-sky-100 text-sky-700" },
+  { titleKey: "news.item2.title", tagKey: "news.item2.tag", date: "5h ago", tagColor: "bg-green-100 text-green-700" },
+  { titleKey: "news.item3.title", tagKey: "news.item3.tag", date: "1d ago", tagColor: "bg-amber-100 text-amber-700" },
 ];
 
 export default function Home() {
@@ -94,284 +101,198 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-full">
 
-      {/* ─── Hero ────────────────────────────────────────── */}
-      <section className="relative pt-12 pb-32 lg:pt-20 lg:pb-44 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img
-            src={`${import.meta.env.BASE_URL}images/hero-farm.png`}
-            alt="Lush green farm"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-green-950/85 via-green-900/65 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-        </div>
+      {/* ── Hero / Greeting ──────────────────────────────── */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#1B5E20] via-[#2E7D32] to-[#43A047] pt-8 pb-20 px-4 sm:px-6 lg:px-8">
+        {/* Background farm image */}
+        <img
+          src={`${import.meta.env.BASE_URL}images/hero-farm.png`}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-15 mix-blend-luminosity pointer-events-none select-none"
+        />
+        {/* Decorative circles */}
+        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/5 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-white/5 pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div {...fadeUp(0)} className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 text-white mb-6">
-              <Sprout className="w-4 h-4 text-emerald-300" />
-              <span className="text-sm font-semibold tracking-wide">
-                {t("hero.badge")}
-              </span>
-            </div>
-
-            <h1 className="text-5xl lg:text-7xl font-display font-extrabold text-white leading-tight mb-6 drop-shadow-lg">
-              {t("hero.h1_1")}<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-green-100">
-                {t("hero.h1_2")}
-              </span>
+        <div className="relative z-10 max-w-7xl mx-auto">
+          <motion.div {...fadeUp(0)}>
+            <p className="text-emerald-200 text-sm font-medium mb-1">🌾 {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}</p>
+            <h1 className="text-3xl sm:text-4xl font-display font-bold text-white mb-1">
+              {getGreeting()}, Farmer! 👋
             </h1>
-
-            <p className="text-lg lg:text-xl text-green-50 mb-8 font-medium max-w-xl drop-shadow">
+            <p className="text-emerald-100/80 text-base font-medium mb-6">
               {t("hero.subtitle")}
             </p>
+          </motion.div>
 
-            <div className="flex flex-wrap items-center gap-4">
-              <Button asChild size="lg" className="rounded-xl bg-gradient-to-r from-primary to-emerald-500 hover:from-primary/90 hover:to-emerald-400 text-white shadow-lg shadow-primary/30 border-0 h-14 px-8 text-lg group">
-                <Link href="/prices">
-                  {t("hero.btn_prices")}
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="rounded-xl border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 h-14 px-8 text-lg border-2">
-                <Link href="/ai-assistant">{t("hero.btn_ai")}</Link>
-              </Button>
-            </div>
+          {/* Search Bar */}
+          <motion.div {...fadeUp(0.08)} className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search crops, schemes, advice..."
+              className="w-full h-14 pl-12 pr-5 rounded-2xl bg-white text-foreground text-base font-medium placeholder:text-muted-foreground shadow-lg shadow-black/10 border-0 outline-none focus:ring-2 focus:ring-primary/40 transition-all"
+            />
           </motion.div>
         </div>
       </section>
 
-      {/* ─── Quick Access Cards ───────────────────────────── */}
-      <section className="relative z-20 -mt-20 pb-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {QUICK_CARDS.map((card, i) => (
-              <QuickCard key={card.href} card={card} delay={0.08 * i} />
-            ))}
-          </div>
-        </div>
-      </section>
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
 
-      {/* ─── AI Assistant Banner ──────────────────────────── */}
-      <section className="py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            {...fadeUp(0.1)}
-            className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary via-emerald-600 to-teal-600 p-8 shadow-2xl shadow-primary/25"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1612758373188-2d59b2717542?q=80&w=2070&auto=format&fit=crop"
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover object-center opacity-[0.18] mix-blend-luminosity pointer-events-none select-none"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-emerald-700/40 to-transparent pointer-events-none" />
-            <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/5" />
-            <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-white/5" />
-            <div className="absolute top-4 right-1/3 w-32 h-32 rounded-full bg-emerald-400/20 blur-2xl" />
-
-            <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-              <div className="flex items-start gap-5">
-                <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center shrink-0">
-                  <Bot className="w-8 h-8 text-white" />
+        {/* ── Weather Card (overlapping hero) ─────────────── */}
+        <motion.div
+          {...fadeUp(0.1)}
+          className="relative -mt-10 mb-6 overflow-hidden rounded-3xl shadow-xl"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600" />
+          <img
+            src="https://images.unsplash.com/photo-1510987836583-e3fb9586c7b3?q=80&w=800&auto=format&fit=crop"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-screen pointer-events-none select-none"
+          />
+          <div className="relative z-10 p-5">
+            <div className="flex items-start justify-between gap-4">
+              {/* Left: main temp */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <CloudSun className="w-5 h-5 text-amber-200" />
+                  <span className="text-sky-100 text-sm font-semibold">{t("weather.title")} · Bengaluru</span>
                 </div>
-                <div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 text-white text-xs font-bold mb-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
-                    {t("banner.ai_powered")}
+                <div className="flex items-end gap-3">
+                  <span className="text-6xl font-display font-bold text-white leading-none">28°</span>
+                  <div className="pb-1">
+                    <p className="text-white font-semibold text-base">{t("weather.partly_cloudy")}</p>
+                    <p className="text-sky-200 text-sm">H: 32° · L: 21°</p>
                   </div>
-                  <h2 className="text-2xl lg:text-3xl font-display font-bold text-white leading-tight">
-                    {t("banner.title")}
-                  </h2>
-                  <p className="text-emerald-100 mt-1 font-medium">
-                    {t("banner.desc")}
-                  </p>
                 </div>
-              </div>
-              <Button asChild size="lg" className="rounded-xl bg-white text-primary hover:bg-white/90 font-bold h-13 px-7 shrink-0 shadow-lg">
-                <Link href="/ai-assistant">
-                  {t("banner.ask_btn")}
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Link>
-              </Button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ─── Weather + News ───────────────────────────────── */}
-      <section className="pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-          {/* Weather Card */}
-          <motion.div {...fadeUp(0.1)} className="relative overflow-hidden rounded-3xl shadow-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600" />
-            <img
-              src="https://images.unsplash.com/photo-1510987836583-e3fb9586c7b3?q=80&w=2070&auto=format&fit=crop"
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover object-center opacity-40 mix-blend-screen pointer-events-none select-none"
-            />
-            <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10" />
-            <div className="absolute top-16 -left-6 w-28 h-28 rounded-full bg-white/8" />
-            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-blue-700/40 to-transparent" />
-
-            <div className="relative z-10 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div>
-                  <h3 className="font-bold text-lg text-white">{t("weather.title")}</h3>
-                </div>
-                <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
-                  <CloudSun className="w-6 h-6 text-white" />
+                <div className="flex gap-3 mt-3">
+                  <span className="flex items-center gap-1.5 bg-white/15 rounded-xl px-3 py-1.5 text-white text-sm font-semibold">
+                    <Droplets className="w-4 h-4 text-sky-200" /> 65%
+                  </span>
+                  <span className="flex items-center gap-1.5 bg-white/15 rounded-xl px-3 py-1.5 text-white text-sm font-semibold">
+                    <Wind className="w-4 h-4 text-sky-200" /> 12 km/h
+                  </span>
                 </div>
               </div>
 
-              <div className="flex items-end gap-3 mt-6 mb-2">
-                <span className="text-6xl font-display font-bold text-white leading-none">28°</span>
-                <div className="pb-1">
-                  <p className="text-white font-semibold text-lg">{t("weather.partly_cloudy")}</p>
-                  <p className="text-sky-200 text-sm">H: 32° L: 21°</p>
-                </div>
-              </div>
-
-              <div className="flex gap-4 mt-4 mb-5">
-                <div className="flex items-center gap-1.5 bg-white/15 rounded-xl px-3 py-1.5">
-                  <Droplets className="w-4 h-4 text-sky-200" />
-                  <span className="text-white text-sm font-semibold">65%</span>
-                </div>
-                <div className="flex items-center gap-1.5 bg-white/15 rounded-xl px-3 py-1.5">
-                  <Wind className="w-4 h-4 text-sky-200" />
-                  <span className="text-white text-sm font-semibold">12 km/h</span>
-                </div>
-              </div>
-
-              {/* 4-day forecast */}
-              <div className="grid grid-cols-4 gap-1 pt-4 border-t border-white/20">
-                {FORECAST_KEYS.map((f) => (
-                  <div key={f.dayKey} className="flex flex-col items-center gap-1 py-2 rounded-xl bg-white/10 backdrop-blur-sm">
-                    <span className="text-sky-200 text-[10px] font-bold uppercase">{t(f.dayKey)}</span>
-                    <f.icon className={`w-5 h-5 ${f.color}`} />
-                    <span className="text-white font-bold text-xs">{f.hi}°</span>
-                    <span className="text-sky-300 text-[10px]">{f.lo}°</span>
+              {/* Right: 4-day forecast */}
+              <div className="flex flex-col gap-2 shrink-0">
+                {FORECAST.map((f) => (
+                  <div key={f.day} className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-3 py-1.5">
+                    <span className="text-sky-200 text-xs font-bold w-8">{f.day}</span>
+                    <f.icon className={`w-4 h-4 shrink-0 ${f.color}`} />
+                    <span className="text-white text-xs font-bold">{f.hi}°</span>
+                    <span className="text-sky-300 text-xs">{f.lo}°</span>
                   </div>
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
+        </motion.div>
 
-          {/* News Card */}
-          <motion.div {...fadeUp(0.15)} className="lg:col-span-2 bg-white rounded-3xl shadow-xl border border-border/50 flex flex-col overflow-hidden">
-            <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-border/50 bg-gradient-to-r from-green-50 to-white">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
-                  <Newspaper className="w-5 h-5 text-primary" />
+        {/* ── Feature Grid ────────────────────────────────── */}
+        <section className="mb-8">
+          <h2 className="text-lg font-display font-bold text-foreground mb-4">Quick Access</h2>
+          <div className="grid grid-cols-2 gap-4">
+            {FEATURE_CARDS.map((card, i) => (
+              <Link key={card.href} href={card.href}>
+                <motion.div
+                  {...fadeUp(0.05 * i)}
+                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                  whileTap={{ scale: 0.97 }}
+                  className={`group relative overflow-hidden rounded-3xl border ${card.border} bg-gradient-to-br ${card.cardBg} p-5 cursor-pointer shadow-sm hover:shadow-lg hover:shadow-black/8 transition-shadow duration-300`}
+                >
+                  {/* Tag */}
+                  <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full mb-3 ${card.tagColor}`}>
+                    {card.tag}
+                  </span>
+
+                  {/* Icon */}
+                  <div className={`w-12 h-12 rounded-2xl ${card.iconBg} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}>
+                    <card.icon className={`w-6 h-6 ${card.iconColor}`} />
+                  </div>
+
+                  {/* Labels */}
+                  <p className="font-display font-bold text-base text-foreground leading-tight">{card.label}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{card.labelHi}</p>
+
+                  {/* Arrow */}
+                  <ArrowRight className={`absolute bottom-4 right-4 w-4 h-4 ${card.iconColor} opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200`} />
+                </motion.div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* ── AgriGo Banner ──────────────────────────────── */}
+        <section className="mb-8">
+          <motion.div
+            {...fadeUp(0.15)}
+            className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#2E7D32] via-[#388E3C] to-[#43A047] p-6 shadow-xl shadow-primary/20"
+          >
+            <div className="absolute -top-8 -right-8 w-48 h-48 rounded-full bg-white/5 pointer-events-none" />
+            <div className="absolute -bottom-8 -left-8 w-40 h-40 rounded-full bg-white/5 pointer-events-none" />
+            <div className="relative z-10 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center shrink-0">
+                  <Tractor className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-foreground leading-tight">{t("news.title")}</h3>
+                  <p className="text-xs font-bold text-emerald-200 mb-0.5 uppercase tracking-wider">AgriGo Marketplace</p>
+                  <h3 className="text-xl font-display font-bold text-white">Sell & Buy Farm Products</h3>
+                  <p className="text-emerald-100/80 text-sm mt-0.5">Connect directly with buyers nationwide</p>
                 </div>
               </div>
-              <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 rounded-xl font-semibold text-sm">
-                {t("news.view_all")} <ArrowRight className="ml-1 w-3.5 h-3.5" />
-              </Button>
-            </div>
-
-            <div className="flex flex-col divide-y divide-border/40 flex-1">
-              {NEWS_KEYS.map((news, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 + i * 0.08 }}
-                  className="group px-6 py-5 hover:bg-muted/40 transition-colors cursor-pointer flex items-start gap-4"
-                >
-                  <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-muted/60 flex items-center justify-center mt-0.5 group-hover:bg-primary/10 transition-colors">
-                    <span className="text-lg font-bold text-muted-foreground/60 group-hover:text-primary transition-colors">
-                      {i + 1}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${news.tagColor}`}>
-                        {t(news.tagKey)}
-                      </span>
-                      <span className="text-xs text-muted-foreground">{news.date}</span>
-                    </div>
-                    <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">
-                      {t(news.titleKey)}
-                    </h4>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-all group-hover:translate-x-0.5 mt-1 shrink-0" />
-                </motion.div>
-              ))}
+              <a
+                href="https://web-app-builder-shreyaspiano.replit.app"
+                className="shrink-0 flex items-center gap-2 bg-white text-primary font-bold text-sm px-5 py-2.5 rounded-2xl shadow-md hover:bg-white/90 transition-all"
+              >
+                Explore <ArrowRight className="w-4 h-4" />
+              </a>
             </div>
           </motion.div>
+        </section>
 
-        </div>
-      </section>
+        {/* ── News Section ───────────────────────────────── */}
+        <section className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-display font-bold text-foreground flex items-center gap-2">
+              <Newspaper className="w-5 h-5 text-primary" /> {t("news.title")}
+            </h2>
+            <button className="text-sm font-semibold text-primary flex items-center gap-1 hover:underline">
+              {t("news.view_all")} <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="bg-white rounded-3xl border border-border/50 shadow-sm overflow-hidden divide-y divide-border/40">
+            {NEWS_ITEMS.map((news, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 + i * 0.07 }}
+                className="group flex items-start gap-4 px-5 py-4 hover:bg-muted/30 transition-colors cursor-pointer"
+              >
+                <div className="shrink-0 w-9 h-9 rounded-2xl bg-muted/60 flex items-center justify-center mt-0.5 group-hover:bg-primary/10 transition-colors">
+                  <span className="text-sm font-bold text-muted-foreground/60 group-hover:text-primary transition-colors">{i + 1}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${news.tagColor}`}>{t(news.tagKey)}</span>
+                    <span className="text-xs text-muted-foreground">{news.date}</span>
+                  </div>
+                  <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors leading-snug">
+                    {t(news.titleKey)}
+                  </p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-all group-hover:translate-x-0.5 mt-2 shrink-0" />
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+      </div>
     </div>
-  );
-}
-
-function QuickCard({
-  card,
-  delay,
-}: {
-  card: (typeof QUICK_CARDS)[0];
-  delay: number;
-}) {
-  const { t } = useLang();
-  return (
-    <Link href={card.href}>
-      <motion.div
-        initial={{ opacity: 0, y: 32 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
-        whileHover={{ y: -6, transition: { duration: 0.2 } }}
-        className={`group relative h-full bg-gradient-to-br ${card.bg} rounded-3xl p-6 border border-white shadow-xl ${card.glow} shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer overflow-hidden flex flex-col`}
-      >
-        {/* Gradient top stripe */}
-        <div className={`absolute top-0 left-0 right-0 h-1 rounded-t-3xl bg-gradient-to-r ${card.gradient}`} />
-
-        {/* Decorative SVG shape */}
-        <svg
-          className="absolute -bottom-2 -right-2 w-32 h-20 opacity-60"
-          viewBox="0 0 120 80"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d={card.decorShape} className={card.shapeColor} />
-        </svg>
-
-        {/* Tag */}
-        <div className="flex items-center justify-between mb-5">
-          <span className={`text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full ${card.tagColor}`}>
-            {card.tag}
-          </span>
-          <ArrowRight className={`w-4 h-4 ${card.accent} opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200`} />
-        </div>
-
-        {/* Icon */}
-        <div className={`relative w-16 h-16 rounded-2xl ${card.iconBg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
-          <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm scale-110`} />
-          <card.icon className={`w-8 h-8 ${card.iconColor} relative z-10`} />
-        </div>
-
-        {/* Text */}
-        <h3 className={`font-bold text-xl text-foreground leading-tight group-hover:${card.accent} transition-colors`}>
-          {t(`card.${card.translKey}.title`)}
-        </h3>
-        <p className="text-muted-foreground text-sm leading-relaxed flex-1 mt-2">
-          {t(`card.${card.translKey}.desc`)}
-        </p>
-
-        {/* Bottom stat */}
-        <div className="mt-5 pt-4 border-t border-black/5 flex items-baseline gap-1.5">
-          <span className={`text-2xl font-display font-bold ${card.accent}`}>{card.stat}</span>
-          <span className="text-xs text-muted-foreground font-medium">
-            {t(`card.${card.translKey}.stat_label`)}
-          </span>
-        </div>
-      </motion.div>
-    </Link>
   );
 }
