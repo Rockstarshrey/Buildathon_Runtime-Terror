@@ -51,6 +51,43 @@ const CROP_EMOJI: Record<string, string> = {
   Banana: "🍌", Apple: "🍎", Cauliflower: "🥦", Spinach: "🥬", Garlic: "🧄",
 };
 
+type CropCategory = "all" | "Fruits" | "Vegetables" | "Grains" | "Pulses" | "Spices" | "Oilseeds";
+
+const CROP_CATEGORIES: { id: CropCategory; label: string; emoji: string; keywords: string[] }[] = [
+  {
+    id: "Fruits", label: "Fruits", emoji: "🍎",
+    keywords: ["apple", "banana", "guava", "lemon", "lime", "orange", "mousambi", "karbuja", "water melon", "watermelon", "chikoos", "sapota", "sweet lime"],
+  },
+  {
+    id: "Vegetables", label: "Vegetables", emoji: "🥦",
+    keywords: ["tomato", "onion", "potato", "brinjal", "cabbage", "capsicum", "carrot", "cauliflower", "coriander(leaves)", "cucumber", "cucumbar", "chilli", "raddish", "radish", "ridgeguard", "thondekai", "bitter gourd", "bottle gourd", "beetroot", "chapparad", "suvarna gadde"],
+  },
+  {
+    id: "Grains", label: "Grains", emoji: "🌾",
+    keywords: ["wheat", "rice", "paddy", "maize", "jowar", "sorghum", "soyabean", "soybean"],
+  },
+  {
+    id: "Pulses", label: "Pulses", emoji: "🫘",
+    keywords: ["arhar", "tur dal", "gram dal", "gram(gram)", "gram(whole)", "black gram", "urd", "green gram", "moong", "guar", "isabgul", "psyllium", "chickpea", "chana"],
+  },
+  {
+    id: "Spices", label: "Spices", emoji: "🌶️",
+    keywords: ["pepper", "coriander seed", "corriander seed", "cummin", "jeera", "garlic", "ginger", "turmeric"],
+  },
+  {
+    id: "Oilseeds", label: "Oilseeds", emoji: "🌻",
+    keywords: ["castor", "cotton", "mustard", "safflower", "sesamum", "sesame", "gingelly", "groundnut"],
+  },
+];
+
+function getCropCategory(cropName: string): CropCategory {
+  const lower = cropName.toLowerCase();
+  for (const cat of CROP_CATEGORIES) {
+    if (cat.keywords.some((kw) => lower.includes(kw))) return cat.id;
+  }
+  return "all";
+}
+
 const TREND_META: Record<Trend, { label: string; labelHi: string; icon: React.ReactNode; rowBorder: string; badge: string; priceCls: string }> = {
   up: {
     label: "Rising", labelHi: "बढ़त",
@@ -87,26 +124,23 @@ export default function Prices() {
   const { data: prices, isLoading } = useGetMandiPrices();
 
   const [search, setSearch] = useState("");
-  const [selectedCrop, setSelectedCrop] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<CropCategory>("all");
   const [selectedState, setSelectedState] = useState<string>("all");
   const [selectedTrend, setSelectedTrend] = useState<Trend | null>(null);
   const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>("price-high");
   const [filtersOpen, setFiltersOpen] = useState(true);
 
-  const { crops, states, globalMin, globalMax } = useMemo(() => {
-    if (!prices) return { crops: [], states: [], globalMin: 0, globalMax: 10000 };
-    const cropSet = new Set<string>();
+  const { states, globalMin, globalMax } = useMemo(() => {
+    if (!prices) return { states: [], globalMin: 0, globalMax: 10000 };
     const stateSet = new Set<string>();
     let min = Infinity, max = -Infinity;
     for (const p of prices) {
-      cropSet.add(p.crop);
       stateSet.add(p.state);
       if (p.modalPrice < min) min = p.modalPrice;
       if (p.modalPrice > max) max = p.modalPrice;
     }
     return {
-      crops: Array.from(cropSet).sort(),
       states: Array.from(stateSet).sort(),
       globalMin: Math.floor(min / 100) * 100,
       globalMax: Math.ceil(max / 100) * 100,
@@ -122,7 +156,7 @@ export default function Prices() {
       const q = search.toLowerCase();
       if (q && !p.crop.toLowerCase().includes(q) && !p.cropHindi.includes(search) &&
           !p.state.toLowerCase().includes(q) && !p.market.toLowerCase().includes(q)) return false;
-      if (selectedCrop !== "all" && p.crop !== selectedCrop) return false;
+      if (selectedCategory !== "all" && getCropCategory(p.crop) !== selectedCategory) return false;
       if (selectedState !== "all" && p.state !== selectedState) return false;
       if (selectedTrend !== null && p.trend !== selectedTrend) return false;
       if (p.modalPrice < effectiveMin || p.modalPrice > effectiveMax) return false;
@@ -136,22 +170,25 @@ export default function Prices() {
       return 0;
     });
     return result;
-  }, [prices, search, selectedCrop, selectedState, selectedTrend, effectiveMin, effectiveMax, sortKey]);
+  }, [prices, search, selectedCategory, selectedState, selectedTrend, effectiveMin, effectiveMax, sortKey]);
 
   const toggleTrend = useCallback((trend: Trend) => {
     setSelectedTrend((prev) => (prev === trend ? null : trend));
   }, []);
 
   const clearAllFilters = () => {
-    setSearch(""); setSelectedCrop("all"); setSelectedState("all");
+    setSearch(""); setSelectedCategory("all"); setSelectedState("all");
     setSelectedTrend(null); setPriceRange(null);
   };
 
-  const hasActiveFilters = search || selectedCrop !== "all" || selectedState !== "all" || selectedTrend !== null || priceRange !== null;
+  const hasActiveFilters = search || selectedCategory !== "all" || selectedState !== "all" || selectedTrend !== null || priceRange !== null;
 
   const activeFilterTags: { key: string; label: string; onRemove: () => void }[] = [];
   if (search) activeFilterTags.push({ key: "search", label: `"${search}"`, onRemove: () => setSearch("") });
-  if (selectedCrop !== "all") activeFilterTags.push({ key: "crop", label: selectedCrop, onRemove: () => setSelectedCrop("all") });
+  if (selectedCategory !== "all") {
+    const cat = CROP_CATEGORIES.find((c) => c.id === selectedCategory);
+    if (cat) activeFilterTags.push({ key: "category", label: `${cat.emoji} ${cat.label}`, onRemove: () => setSelectedCategory("all") });
+  }
   if (selectedState !== "all") activeFilterTags.push({ key: "state", label: selectedState, onRemove: () => setSelectedState("all") });
   if (selectedTrend !== null) activeFilterTags.push({ key: `trend-${selectedTrend}`, label: TREND_META[selectedTrend].label, onRemove: () => setSelectedTrend(null) });
   if (priceRange) activeFilterTags.push({ key: "price", label: `₹${priceRange[0]} – ₹${priceRange[1]}`, onRemove: () => setPriceRange(null) });
@@ -303,18 +340,33 @@ export default function Prices() {
               >
                 <div className="px-5 pb-5 border-t border-border/40 space-y-5 pt-4 bg-gradient-to-br from-green-50/60 to-white">
 
-                  {/* Crop chips with emojis */}
+                  {/* Category filter */}
                   <div>
                     <p className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest mb-3">{t("prices.crop")}</p>
                     <div className="flex flex-wrap gap-2">
-                      <CropChip label={t("prices.all")} active={selectedCrop === "all"} onClick={() => setSelectedCrop("all")} />
-                      {crops.map((crop) => (
-                        <CropChip
-                          key={crop}
-                          label={`${CROP_EMOJI[crop] ?? "🌱"} ${crop}`}
-                          active={selectedCrop === crop}
-                          onClick={() => setSelectedCrop(selectedCrop === crop ? "all" : crop)}
-                        />
+                      <button
+                        onClick={() => setSelectedCategory("all")}
+                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border transition-all duration-150 ${
+                          selectedCategory === "all"
+                            ? "bg-primary text-white border-primary shadow-sm"
+                            : "bg-white text-foreground border-border hover:border-primary/50 hover:bg-primary/5"
+                        }`}
+                      >
+                        {t("prices.all")}
+                      </button>
+                      {CROP_CATEGORIES.map((cat) => (
+                        <button
+                          key={cat.id}
+                          onClick={() => setSelectedCategory(selectedCategory === cat.id ? "all" : cat.id)}
+                          className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border transition-all duration-150 ${
+                            selectedCategory === cat.id
+                              ? "bg-primary text-white border-primary shadow-sm"
+                              : "bg-white text-foreground border-border hover:border-primary/50 hover:bg-primary/5"
+                          }`}
+                        >
+                          <span>{cat.emoji}</span>
+                          {cat.label}
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -546,17 +598,3 @@ export default function Prices() {
   );
 }
 
-function CropChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-150 whitespace-nowrap ${
-        active
-          ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
-          : "bg-white text-foreground border-border/70 hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
