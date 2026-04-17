@@ -71,7 +71,7 @@ export default function Schemes() {
 
           <div className="flex flex-wrap gap-2 justify-center">
             {categories.map((cat) => {
-              const meta = cat === "all" ? { label: "All Schemes", color: "text-white", bg: "" } : catMeta(cat);
+              const meta = cat === "all" ? { label: "All Schemes", color: "text-foreground", bg: "bg-muted" } : catMeta(cat);
               const isActive = activeCategory === cat;
               return (
                 <button
