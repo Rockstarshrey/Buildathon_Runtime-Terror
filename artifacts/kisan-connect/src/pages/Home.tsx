@@ -47,7 +47,7 @@ const QUICK_CARDS = [
     iconBg: "bg-blue-500/15",
     iconColor: "text-blue-600",
     accent: "text-blue-600",
-    tag: "6 SCHEMES",
+    tag: "14 SCHEMES",
     tagColor: "bg-blue-100 text-blue-700",
     decorShape: "M120,0 L0,0 L0,80 Q60,110 120,80 Z",
     shapeColor: "fill-blue-400/10",
