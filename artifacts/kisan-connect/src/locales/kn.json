@@ -99,5 +99,13 @@
   "lang.select": "ಭಾಷೆ",
   "lang.en": "English",
   "lang.hi": "हिन्दी",
-  "lang.kn": "ಕನ್ನಡ"
+  "lang.kn": "ಕನ್ನಡ",
+
+  "nav.agrinews": "ಅಗ್ರಿನ್ಯೂಸ್",
+  "card.agrinews.title": "ಅಗ್ರಿನ್ಯೂಸ್",
+  "card.agrinews.desc": "ಭಾರತ ಮತ್ತು ಜಗತ್ತಿನಾದ್ಯಂತ ನೇರ ಕೃಷಿ ಸುದ್ದಿ",
+  "card.agrinews.stat_label": "ನೇರ ಲೇಖನಗಳು",
+  "agrinews.live_badge": "ನೇರ ನವೀಕರಣ",
+  "agrinews.subtitle": "ಭಾರತ ಮತ್ತು ಜಗತ್ತಿನಾದ್ಯಂತ ರಿಯಲ್-ಟೈಮ್ ಕೃಷಿ ಸುದ್ದಿ",
+  "agrinews.search_placeholder": "ಸುದ್ದಿ ಹುಡುಕಿ…"
 }

@@ -5,6 +5,7 @@ import pricesRouter from "./prices";
 import schemesRouter from "./schemes";
 import aiRouter from "./ai";
 import ttsRouter from "./tts";
+import newsRouter from "./news";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use("/prices", pricesRouter);
 router.use("/schemes", schemesRouter);
 router.use("/ai", aiRouter);
 router.use("/tts", ttsRouter);
+router.use("/news", newsRouter);
 
 export default router;

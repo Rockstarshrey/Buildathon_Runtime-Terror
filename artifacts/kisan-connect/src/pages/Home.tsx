@@ -6,8 +6,8 @@ import {
   ArrowRight,
   MessageSquare,
   ShieldCheck,
-  Newspaper,
   Bot,
+  Rss,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLang } from "@/lib/i18n";
@@ -68,14 +68,25 @@ const QUICK_CARDS = [
     decorShape: "M0,0 L120,0 L120,80 Q60,110 0,80 Z",
     shapeColor: "fill-violet-400/10",
   },
+  {
+    href: "/agrinews",
+    translKey: "agrinews",
+    icon: Rss,
+    stat: "30+",
+    gradient: "from-teal-500 via-cyan-500 to-sky-500",
+    glow: "shadow-teal-400/40",
+    bg: "from-teal-50 to-cyan-50",
+    iconBg: "bg-teal-500/15",
+    iconColor: "text-teal-600",
+    accent: "text-teal-600",
+    tag: "LIVE NEWS",
+    tagColor: "bg-teal-100 text-teal-700",
+    decorShape: "M120,0 L0,0 L0,80 Q60,110 120,80 Z",
+    shapeColor: "fill-teal-400/10",
+  },
 ];
 
 
-const NEWS_KEYS = [
-  { titleKey: "news.item1.title", tagKey: "news.item1.tag", date: "2h", tagColor: "bg-sky-100 text-sky-700" },
-  { titleKey: "news.item2.title", tagKey: "news.item2.tag", date: "5h", tagColor: "bg-green-100 text-green-700" },
-  { titleKey: "news.item3.title", tagKey: "news.item3.tag", date: "1d", tagColor: "bg-amber-100 text-amber-700" },
-];
 
 export default function Home() {
   const { t } = useLang();
@@ -188,62 +199,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── Weather + News ───────────────────────────────── */}
+      {/* ─── Weather ──────────────────────────────────────── */}
       <section className="pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-          {/* Weather Card — live data from Open-Meteo */}
-          <motion.div {...fadeUp(0.1)}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div {...fadeUp(0.1)} className="max-w-sm">
             <WeatherCard />
           </motion.div>
-
-          {/* News Card */}
-          <motion.div {...fadeUp(0.15)} className="lg:col-span-2 bg-white rounded-3xl shadow-xl border border-border/50 flex flex-col overflow-hidden">
-            <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-border/50 bg-gradient-to-r from-green-50 to-white">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
-                  <Newspaper className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg text-foreground leading-tight">{t("news.title")}</h3>
-                </div>
-              </div>
-              <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 rounded-xl font-semibold text-sm">
-                {t("news.view_all")} <ArrowRight className="ml-1 w-3.5 h-3.5" />
-              </Button>
-            </div>
-
-            <div className="flex flex-col divide-y divide-border/40 flex-1">
-              {NEWS_KEYS.map((news, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 + i * 0.08 }}
-                  className="group px-6 py-5 hover:bg-muted/40 transition-colors cursor-pointer flex items-start gap-4"
-                >
-                  <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-muted/60 flex items-center justify-center mt-0.5 group-hover:bg-primary/10 transition-colors">
-                    <span className="text-lg font-bold text-muted-foreground/60 group-hover:text-primary transition-colors">
-                      {i + 1}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${news.tagColor}`}>
-                        {t(news.tagKey)}
-                      </span>
-                      <span className="text-xs text-muted-foreground">{news.date}</span>
-                    </div>
-                    <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">
-                      {t(news.titleKey)}
-                    </h4>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-all group-hover:translate-x-0.5 mt-1 shrink-0" />
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
         </div>
       </section>
     </div>

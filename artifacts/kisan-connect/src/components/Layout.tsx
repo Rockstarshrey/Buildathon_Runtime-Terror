@@ -10,6 +10,7 @@ import {
   X,
   Globe,
   ChevronDown,
+  Newspaper,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,6 +22,7 @@ const NAV_LINKS = [
   { href: "/schemes", key: "nav.schemes", icon: FileText },
   { href: "/community", key: "nav.community", icon: MessageSquare },
   { href: "/ai-assistant", key: "nav.ai_assistant", icon: Bot },
+  { href: "/agrinews", key: "nav.agrinews", icon: Newspaper },
 ];
 
 const LANGUAGES: { code: Lang; native: string; flag: string }[] = [

@@ -5,6 +5,7 @@
   "nav.community": "Community",
   "nav.ai_assistant": "AI Assistant",
   "nav.agrigo": "AgriGo",
+  "nav.agrinews": "AgriNews",
 
   "hero.badge": "Empowering Farmers",
   "hero.h1_1": "Smart farming,",
@@ -22,6 +23,9 @@
   "card.community.title": "Community",
   "card.community.desc": "Share tips, ask questions, connect with local farmers",
   "card.community.stat_label": "farmers online",
+  "card.agrinews.title": "AgriNews",
+  "card.agrinews.desc": "Live agriculture news from India and around the world",
+  "card.agrinews.stat_label": "articles live",
 
   "banner.ai_powered": "AI POWERED",
   "banner.title": "KisanMitra AI — Your Crop Advisor",
@@ -95,6 +99,10 @@
 
   "footer.copy": "Empowering Indian Farmers.",
   "footer.copy_hi": "किसान कनेक्ट — भारतीय किसानों का सशक्तिकरण",
+
+  "agrinews.live_badge": "Live Updates",
+  "agrinews.subtitle": "Real-time agriculture news from across India and the world",
+  "agrinews.search_placeholder": "Search news…",
 
   "lang.select": "Language",
   "lang.en": "English",

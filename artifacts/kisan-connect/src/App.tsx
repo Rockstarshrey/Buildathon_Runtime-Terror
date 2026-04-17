@@ -12,6 +12,7 @@ import Prices from "@/pages/Prices";
 import Schemes from "@/pages/Schemes";
 import AIAssistant from "@/pages/AIAssistant";
 import AgriGo from "@/pages/AgriGo";
+import AgriNews from "@/pages/AgriNews";
 
 // Create a query client with optimized default options
 const queryClient = new QueryClient({
@@ -34,6 +35,7 @@ function Router() {
         <Route path="/schemes" component={Schemes} />
         <Route path="/ai-assistant" component={AIAssistant} />
         <Route path="/agrigo" component={AgriGo} />
+        <Route path="/agrinews" component={AgriNews} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

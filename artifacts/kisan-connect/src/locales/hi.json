@@ -99,5 +99,13 @@
   "lang.select": "भाषा",
   "lang.en": "English",
   "lang.hi": "हिन्दी",
-  "lang.kn": "ಕನ್ನಡ"
+  "lang.kn": "ಕನ್ನಡ",
+
+  "nav.agrinews": "एग्रीन्यूज",
+  "card.agrinews.title": "एग्रीन्यूज",
+  "card.agrinews.desc": "भारत और विश्व से लाइव कृषि समाचार",
+  "card.agrinews.stat_label": "लाइव लेख",
+  "agrinews.live_badge": "लाइव अपडेट",
+  "agrinews.subtitle": "भारत और दुनिया भर से रियल-टाइम कृषि समाचार",
+  "agrinews.search_placeholder": "समाचार खोजें…"
 }
