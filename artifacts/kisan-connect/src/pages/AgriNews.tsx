@@ -168,8 +168,6 @@ export default function AgriNews() {
     refetchInterval: 10 * 60 * 1000,
   });
 
-  const noKey = data?.error === "News API key not configured";
-
   const filtered = useMemo(() => {
     const articles = data?.articles ?? [];
     return articles.filter((a) => {
@@ -204,7 +202,7 @@ export default function AgriNews() {
               {t("agrinews.subtitle", "Real-time agriculture news from across India and the world")}
             </p>
 
-            {data && !noKey && (
+            {data && (
               <div className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground">
                 {data.stale ? (
                   <span className="text-amber-600">Using cached results</span>
@@ -275,25 +273,8 @@ export default function AgriNews() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-        {/* No API Key state */}
-        {noKey && (
-          <div className="text-center py-20">
-            <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="w-8 h-8 text-amber-500" />
-            </div>
-            <h3 className="font-bold text-lg mb-2">NewsAPI Key Not Set</h3>
-            <p className="text-muted-foreground max-w-sm mx-auto text-sm">
-              Add your <strong>NEWS_API_KEY</strong> from{" "}
-              <a href="https://newsapi.org" target="_blank" rel="noopener noreferrer" className="text-primary underline">
-                newsapi.org
-              </a>{" "}
-              (free tier) to enable live news.
-            </p>
-          </div>
-        )}
-
         {/* Error state */}
-        {isError && !noKey && (
+        {isError && (
           <div className="text-center py-20">
             <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-8 h-8 text-red-400" />
@@ -307,7 +288,7 @@ export default function AgriNews() {
         )}
 
         {/* Loading skeletons */}
-        {isLoading && !noKey && (
+        {isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
               <SkeletonCard key={i} />
@@ -316,7 +297,7 @@ export default function AgriNews() {
         )}
 
         {/* Results count */}
-        {!isLoading && !isError && !noKey && (
+        {!isLoading && !isError && (
           <div className="mb-6 flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
               <span className="font-semibold text-foreground">{filtered.length}</span> articles found
@@ -333,7 +314,7 @@ export default function AgriNews() {
         )}
 
         {/* Articles grid */}
-        {!isLoading && !isError && !noKey && filtered.length > 0 && (
+        {!isLoading && !isError && filtered.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((article, i) => (
               <ArticleCard key={article.url} article={article} index={i} />
@@ -342,7 +323,7 @@ export default function AgriNews() {
         )}
 
         {/* Empty state */}
-        {!isLoading && !isError && !noKey && filtered.length === 0 && (
+        {!isLoading && !isError && filtered.length === 0 && (
           <div className="text-center py-20">
             <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Newspaper className="w-8 h-8 text-muted-foreground" />
