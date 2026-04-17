@@ -56,6 +56,55 @@ const CAT_COLORS: Record<string, string> = {
   General: "bg-gray-100 text-gray-600",
 };
 
+const FALLBACK_IMAGES: Record<string, string[]> = {
+  Policy: [
+    "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=640&q=80",
+    "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=640&q=80",
+    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=640&q=80",
+  ],
+  Market: [
+    "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=640&q=80",
+    "https://images.unsplash.com/photo-1506617420156-8e4536971650?w=640&q=80",
+    "https://images.unsplash.com/photo-1542838132-92c53300491e?w=640&q=80",
+  ],
+  Weather: [
+    "https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=640&q=80",
+    "https://images.unsplash.com/photo-1504608524841-42584120d3f8?w=640&q=80",
+    "https://images.unsplash.com/photo-1511131341194-24e2eeeebb09?w=640&q=80",
+  ],
+  Technology: [
+    "https://images.unsplash.com/photo-1586771107445-d3ca888129ce?w=640&q=80",
+    "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=640&q=80",
+    "https://images.unsplash.com/photo-1581092162384-8987c1d64926?w=640&q=80",
+  ],
+  Organic: [
+    "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=640&q=80",
+    "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=640&q=80",
+    "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=640&q=80",
+  ],
+  Export: [
+    "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=640&q=80",
+    "https://images.unsplash.com/photo-1494412685616-a5d310fbb07d?w=640&q=80",
+    "https://images.unsplash.com/photo-1605745341112-85968b19335b?w=640&q=80",
+  ],
+  General: [
+    "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=640&q=80",
+    "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=640&q=80",
+    "https://images.unsplash.com/photo-1560493676-04071c5f467b?w=640&q=80",
+    "https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=640&q=80",
+    "https://images.unsplash.com/photo-1471194402529-8e0f5a675de6?w=640&q=80",
+  ],
+};
+
+function getFallbackImage(article: Article, category: string): string {
+  const images = FALLBACK_IMAGES[category] ?? FALLBACK_IMAGES.General;
+  let hash = 0;
+  for (let i = 0; i < article.url.length; i++) {
+    hash = (hash * 31 + article.url.charCodeAt(i)) >>> 0;
+  }
+  return images[hash % images.length];
+}
+
 function timeAgo(dateStr: string): string {
   const now = Date.now();
   const diff = Math.floor((now - new Date(dateStr).getTime()) / 1000);
@@ -82,6 +131,7 @@ function SkeletonCard() {
 function ArticleCard({ article, index }: { article: Article; index: number }) {
   const cat = detectCategory(article);
   const catColor = CAT_COLORS[cat] ?? CAT_COLORS.General;
+  const imageUrl = article.urlToImage ?? getFallbackImage(article, cat);
 
   return (
     <motion.a
@@ -93,21 +143,17 @@ function ArticleCard({ article, index }: { article: Article; index: number }) {
       transition={{ duration: 0.4, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
       className="group bg-white rounded-2xl border border-border/50 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
     >
-      <div className="relative h-44 bg-gradient-to-br from-green-50 to-emerald-100 overflow-hidden">
-        {article.urlToImage ? (
-          <img
-            src={article.urlToImage}
-            alt={article.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Newspaper className="w-12 h-12 text-primary/30" />
-          </div>
-        )}
+      <div className="relative h-44 overflow-hidden bg-gray-100">
+        <img
+          src={imageUrl}
+          alt={article.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          onError={(e) => {
+            const img = e.target as HTMLImageElement;
+            const fallback = getFallbackImage(article, "General");
+            if (img.src !== fallback) img.src = fallback;
+          }}
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <div className="absolute top-3 left-3">
           <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${catColor}`}>
