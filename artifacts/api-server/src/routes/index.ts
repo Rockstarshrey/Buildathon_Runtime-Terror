@@ -6,6 +6,7 @@ import schemesRouter from "./schemes";
 import aiRouter from "./ai";
 import ttsRouter from "./tts";
 import newsRouter from "./news";
+import translateRouter from "./translate";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use("/schemes", schemesRouter);
 router.use("/ai", aiRouter);
 router.use("/tts", ttsRouter);
 router.use("/news", newsRouter);
+router.use("/translate", translateRouter);
 
 export default router;

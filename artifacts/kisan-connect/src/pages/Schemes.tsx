@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "@/lib/i18n";
 import { ExternalLink, ChevronRight, Loader2, Search } from "lucide-react";
 import { useGetGovernmentSchemes } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useTranslate } from "@/hooks/useTranslate";
 
 const CATEGORY_META: Record<string, { label: string; color: string; bg: string }> = {
   income:         { label: "Income Support", color: "text-emerald-700", bg: "bg-emerald-100" },
@@ -22,7 +23,7 @@ function catMeta(cat: string) {
 }
 
 export default function Schemes() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { data: schemes, isLoading } = useGetGovernmentSchemes();
   const [activeCategory, setActiveCategory] = useState("all");
   const [search, setSearch] = useState("");
@@ -41,6 +42,25 @@ export default function Schemes() {
       s.benefit?.toLowerCase().includes(q);
     return matchCat && matchSearch;
   });
+
+  const schemesList = useMemo(() => schemes ?? [], [schemes]);
+  const schemeNames = useMemo(() => schemesList.map((s: any) => s.name ?? ""), [schemesList]);
+  const schemeDescs = useMemo(() => schemesList.map((s: any) => s.description ?? ""), [schemesList]);
+  const schemeBenefits = useMemo(() => schemesList.map((s: any) => s.benefit ?? ""), [schemesList]);
+  const schemeEligibility = useMemo(() => schemesList.map((s: any) => s.eligibility ?? ""), [schemesList]);
+
+  const { translated: txNames } = useTranslate(lang === "en" ? [] : schemeNames);
+  const { translated: txDescs } = useTranslate(lang === "en" ? [] : schemeDescs);
+  const { translated: txBenefits } = useTranslate(lang === "en" ? [] : schemeBenefits);
+  const { translated: txEligibility } = useTranslate(lang === "en" ? [] : schemeEligibility);
+
+  function getSchemeText(idx: number, field: "name" | "description" | "benefit" | "eligibility") {
+    const scheme = schemesList[idx];
+    if (!scheme) return "";
+    if (lang === "en") return scheme[field] ?? "";
+    const maps: Record<string, string[]> = { name: txNames, description: txDescs, benefit: txBenefits, eligibility: txEligibility };
+    return maps[field]?.[idx] || scheme[field] || "";
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
@@ -106,6 +126,7 @@ export default function Schemes() {
               {filtered?.map((scheme: any, i: number) => {
                 const applyLink = scheme.applyLink || "";
                 const meta = catMeta(scheme.category);
+                const globalIdx = schemesList.indexOf(scheme);
 
                 return (
                   <motion.div
@@ -126,27 +147,27 @@ export default function Schemes() {
                         <span className={`text-xs font-bold tracking-wider uppercase px-2 py-1 rounded-md ${meta.bg} ${meta.color}`}>
                           {meta.label}
                         </span>
-                        <h3 className="font-bold text-lg text-foreground mt-2 leading-tight">{scheme.name}</h3>
+                        <h3 className="font-bold text-lg text-foreground mt-2 leading-tight">{getSchemeText(globalIdx, "name")}</h3>
                         <p className="text-sm font-medium text-muted-foreground mt-0.5">{scheme.nameHindi}</p>
                       </div>
                     </div>
 
                     {/* Description */}
                     <div className="flex-1 space-y-4 text-sm mt-2">
-                      <p className="text-foreground leading-relaxed">{scheme.description}</p>
+                      <p className="text-foreground leading-relaxed">{getSchemeText(globalIdx, "description")}</p>
 
                       <div className="bg-muted/50 rounded-xl p-4 space-y-3 border border-border/50">
                         <div>
                           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
                             {t("schemes.benefits")}
                           </span>
-                          <span className="font-semibold text-emerald-700">{scheme.benefit}</span>
+                          <span className="font-semibold text-emerald-700">{getSchemeText(globalIdx, "benefit")}</span>
                         </div>
                         <div>
                           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
                             {t("schemes.eligibility")}
                           </span>
-                          <span className="font-medium text-foreground">{scheme.eligibility}</span>
+                          <span className="font-medium text-foreground">{getSchemeText(globalIdx, "eligibility")}</span>
                         </div>
                         {applyLink && (
                           <div>

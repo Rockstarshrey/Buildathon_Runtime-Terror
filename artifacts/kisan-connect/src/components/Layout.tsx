@@ -11,6 +11,7 @@ import {
   Globe,
   ChevronDown,
   Newspaper,
+  Loader2,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,14 +26,20 @@ const NAV_LINKS = [
   { href: "/agrinews", key: "nav.agrinews", icon: Newspaper },
 ];
 
-const LANGUAGES: { code: Lang; native: string; flag: string }[] = [
+const LANGUAGES: { code: Lang; native: string; flag: string; ai?: boolean }[] = [
   { code: "en", native: "English", flag: "🇬🇧" },
   { code: "hi", native: "हिन्दी", flag: "🇮🇳" },
   { code: "kn", native: "ಕನ್ನಡ", flag: "🇮🇳" },
+  { code: "ta", native: "தமிழ்", flag: "🇮🇳", ai: true },
+  { code: "te", native: "తెలుగు", flag: "🇮🇳", ai: true },
+  { code: "mr", native: "मराठी", flag: "🇮🇳", ai: true },
+  { code: "bn", native: "বাংলা", flag: "🇮🇳", ai: true },
+  { code: "pa", native: "ਪੰਜਾਬੀ", flag: "🇮🇳", ai: true },
+  { code: "gu", native: "ગુજરાતી", flag: "🇮🇳", ai: true },
 ];
 
 function LangSwitcher() {
-  const { lang, setLang } = useLang();
+  const { lang, setLang, isTranslating } = useLang();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -46,7 +53,7 @@ function LangSwitcher() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const current = LANGUAGES.find((l) => l.code === lang)!;
+  const current = LANGUAGES.find((l) => l.code === lang) ?? LANGUAGES[0];
 
   return (
     <div ref={ref} className="relative">
@@ -55,7 +62,11 @@ function LangSwitcher() {
         className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 text-sm font-semibold"
         aria-label="Switch language"
       >
-        <Globe className="w-4 h-4" />
+        {isTranslating ? (
+          <Loader2 className="w-4 h-4 animate-spin text-primary" />
+        ) : (
+          <Globe className="w-4 h-4" />
+        )}
         <span className="hidden sm:inline">{current.native}</span>
         <ChevronDown
           className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
@@ -69,19 +80,25 @@ function LangSwitcher() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -4 }}
             transition={{ duration: 0.12 }}
-            className="absolute right-0 top-full mt-2 w-40 bg-white rounded-2xl shadow-xl border border-border/60 overflow-hidden z-50"
+            className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-border/60 overflow-hidden z-50"
           >
+            <div className="px-3 py-2 border-b border-border/40">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Select Language</p>
+            </div>
             {LANGUAGES.map((l) => (
               <button
                 key={l.code}
                 onClick={() => { setLang(l.code); setOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-muted/60 ${
+                className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors hover:bg-muted/60 ${
                   lang === l.code ? "bg-primary/10 text-primary font-bold" : "text-foreground font-medium"
                 }`}
               >
                 <span className="text-base">{l.flag}</span>
                 <span>{l.native}</span>
-                {lang === l.code && (
+                {l.ai && (
+                  <span className="ml-auto text-[9px] font-bold text-primary/70 bg-primary/10 px-1.5 py-0.5 rounded-full">AI</span>
+                )}
+                {lang === l.code && !l.ai && (
                   <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />
                 )}
               </button>

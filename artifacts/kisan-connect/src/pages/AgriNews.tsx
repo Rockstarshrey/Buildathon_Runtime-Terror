@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLang } from "@/lib/i18n";
+import { useTranslate } from "@/hooks/useTranslate";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -128,10 +129,22 @@ function SkeletonCard() {
   );
 }
 
-function ArticleCard({ article, index }: { article: Article; index: number }) {
+function ArticleCard({
+  article,
+  index,
+  translatedTitle,
+  translatedDescription,
+}: {
+  article: Article;
+  index: number;
+  translatedTitle?: string;
+  translatedDescription?: string;
+}) {
   const cat = detectCategory(article);
   const catColor = CAT_COLORS[cat] ?? CAT_COLORS.General;
   const imageUrl = article.urlToImage ?? getFallbackImage(article, cat);
+  const displayTitle = translatedTitle || article.title;
+  const displayDescription = translatedDescription || article.description;
 
   return (
     <motion.a
@@ -146,7 +159,7 @@ function ArticleCard({ article, index }: { article: Article; index: number }) {
       <div className="relative h-44 overflow-hidden bg-gray-100">
         <img
           src={imageUrl}
-          alt={article.title}
+          alt={displayTitle}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={(e) => {
             const img = e.target as HTMLImageElement;
@@ -176,12 +189,12 @@ function ArticleCard({ article, index }: { article: Article; index: number }) {
         </div>
 
         <h3 className="font-bold text-foreground leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-          {article.title}
+          {displayTitle}
         </h3>
 
-        {article.description && (
+        {displayDescription && (
           <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 flex-1">
-            {article.description}
+            {displayDescription}
           </p>
         )}
 
@@ -199,7 +212,7 @@ function ArticleCard({ article, index }: { article: Article; index: number }) {
 }
 
 export default function AgriNews() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
 
@@ -225,6 +238,12 @@ export default function AgriNews() {
       return matchCat && matchSearch;
     });
   }, [data?.articles, activeCategory, search]);
+
+  const filteredTitles = useMemo(() => filtered.map((a) => a.title), [filtered]);
+  const filteredDescs = useMemo(() => filtered.map((a) => a.description ?? ""), [filtered]);
+
+  const { translated: txTitles } = useTranslate(lang === "en" ? [] : filteredTitles);
+  const { translated: txDescs } = useTranslate(lang === "en" ? [] : filteredDescs);
 
   return (
     <div className="min-h-full pb-16">
@@ -363,7 +382,13 @@ export default function AgriNews() {
         {!isLoading && !isError && filtered.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((article, i) => (
-              <ArticleCard key={article.url} article={article} index={i} />
+              <ArticleCard
+                key={article.url}
+                article={article}
+                index={i}
+                translatedTitle={txTitles[i] || undefined}
+                translatedDescription={txDescs[i] || undefined}
+              />
             ))}
           </div>
         )}
