@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { useLang } from "@/lib/i18n";
-import { format } from "date-fns";
+import { format, parse, isValid } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   TrendingUp,
@@ -31,6 +31,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+function parseMandiDate(dateStr: string): Date | null {
+  if (!dateStr) return null;
+  const ddmmyyyy = parse(dateStr, "dd/MM/yyyy", new Date());
+  if (isValid(ddmmyyyy)) return ddmmyyyy;
+  const iso = new Date(dateStr);
+  if (isValid(iso)) return iso;
+  return null;
+}
 
 type Trend = "up" | "down" | "stable";
 type SortKey = "price-high" | "price-low" | "crop-az" | "crop-za";
@@ -494,7 +503,7 @@ export default function Prices() {
                               {/* Date */}
                               <td className="px-5 py-4 text-right hidden md:table-cell">
                                 <span className="text-xs font-medium text-muted-foreground bg-muted/60 px-2.5 py-1 rounded-lg">
-                                  {format(new Date(price.date), "dd MMM yyyy")}
+                                  {(() => { const d = parseMandiDate(price.date); return d ? format(d, "dd MMM yyyy") : price.date; })()}
                                 </span>
                               </td>
                             </motion.tr>
