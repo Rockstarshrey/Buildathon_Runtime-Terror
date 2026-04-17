@@ -1,6 +1,6 @@
 {
   "nav.home": "Home",
-  "nav.mandi_prices": "Mandi Prices",
+  "nav.mandi_prices": "APMC Prices",
   "nav.schemes": "Schemes",
   "nav.community": "Community",
   "nav.ai_assistant": "AI Assistant",
@@ -13,7 +13,7 @@
   "hero.btn_prices": "Check Prices",
   "hero.btn_ai": "Ask AI",
 
-  "card.mandi.title": "Mandi Prices",
+  "card.mandi.title": "APMC Prices",
   "card.mandi.desc": "Live crop rates updated daily across major markets",
   "card.mandi.stat_label": "tracked live",
   "card.schemes.title": "Govt Schemes",
@@ -44,7 +44,7 @@
   "news.item3.title": "Govt increases subsidy on organic fertilizers by 15%",
   "news.item3.tag": "Subsidy",
 
-  "prices.title": "Mandi Prices",
+  "prices.title": "APMC Prices",
   "prices.subtitle": "Real-time wholesale crop rates from major mandis across India — updated daily.",
   "prices.live_badge": "Live Market Data",
   "prices.search_placeholder": "Search crop, market, or state…",
