@@ -3,20 +3,15 @@ import { motion } from "framer-motion";
 import {
   TrendingUp,
   Sprout,
-  CloudSun,
   ArrowRight,
   MessageSquare,
   ShieldCheck,
-  Wind,
-  Droplets,
-  Sun,
-  Cloud,
-  CloudRain,
   Newspaper,
   Bot,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLang } from "@/lib/i18n";
+import WeatherCard from "@/components/WeatherCard";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 28 },
@@ -75,12 +70,6 @@ const QUICK_CARDS = [
   },
 ];
 
-const FORECAST_KEYS = [
-  { dayKey: "weather.today", icon: CloudSun, hi: 32, lo: 21, color: "text-amber-500" },
-  { dayKey: "weather.tomorrow", icon: Cloud, hi: 29, lo: 19, color: "text-slate-400" },
-  { dayKey: "weather.thu", icon: CloudRain, hi: 25, lo: 18, color: "text-sky-500" },
-  { dayKey: "weather.fri", icon: Sun, hi: 33, lo: 22, color: "text-amber-400" },
-];
 
 const NEWS_KEYS = [
   { titleKey: "news.item1.title", tagKey: "news.item1.tag", date: "2h", tagColor: "bg-sky-100 text-sky-700" },
@@ -203,60 +192,9 @@ export default function Home() {
       <section className="pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* Weather Card */}
-          <motion.div {...fadeUp(0.1)} className="relative overflow-hidden rounded-3xl shadow-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600" />
-            <img
-              src="https://images.unsplash.com/photo-1510987836583-e3fb9586c7b3?q=80&w=2070&auto=format&fit=crop"
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover object-center opacity-40 mix-blend-screen pointer-events-none select-none"
-            />
-            <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10" />
-            <div className="absolute top-16 -left-6 w-28 h-28 rounded-full bg-white/8" />
-            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-blue-700/40 to-transparent" />
-
-            <div className="relative z-10 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div>
-                  <h3 className="font-bold text-lg text-white">{t("weather.title")}</h3>
-                </div>
-                <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
-                  <CloudSun className="w-6 h-6 text-white" />
-                </div>
-              </div>
-
-              <div className="flex items-end gap-3 mt-6 mb-2">
-                <span className="text-6xl font-display font-bold text-white leading-none">28°</span>
-                <div className="pb-1">
-                  <p className="text-white font-semibold text-lg">{t("weather.partly_cloudy")}</p>
-                  <p className="text-sky-200 text-sm">H: 32° L: 21°</p>
-                </div>
-              </div>
-
-              <div className="flex gap-4 mt-4 mb-5">
-                <div className="flex items-center gap-1.5 bg-white/15 rounded-xl px-3 py-1.5">
-                  <Droplets className="w-4 h-4 text-sky-200" />
-                  <span className="text-white text-sm font-semibold">65%</span>
-                </div>
-                <div className="flex items-center gap-1.5 bg-white/15 rounded-xl px-3 py-1.5">
-                  <Wind className="w-4 h-4 text-sky-200" />
-                  <span className="text-white text-sm font-semibold">12 km/h</span>
-                </div>
-              </div>
-
-              {/* 4-day forecast */}
-              <div className="grid grid-cols-4 gap-1 pt-4 border-t border-white/20">
-                {FORECAST_KEYS.map((f) => (
-                  <div key={f.dayKey} className="flex flex-col items-center gap-1 py-2 rounded-xl bg-white/10 backdrop-blur-sm">
-                    <span className="text-sky-200 text-[10px] font-bold uppercase">{t(f.dayKey)}</span>
-                    <f.icon className={`w-5 h-5 ${f.color}`} />
-                    <span className="text-white font-bold text-xs">{f.hi}°</span>
-                    <span className="text-sky-300 text-[10px]">{f.lo}°</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+          {/* Weather Card — live data from Open-Meteo */}
+          <motion.div {...fadeUp(0.1)}>
+            <WeatherCard />
           </motion.div>
 
           {/* News Card */}
