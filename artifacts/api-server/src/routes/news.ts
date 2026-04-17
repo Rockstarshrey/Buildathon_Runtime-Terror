@@ -68,7 +68,9 @@ function decodeHtmlEntities(str: string): string {
 }
 
 function stripHtml(str: string): string {
-  return decodeHtmlEntities(str.replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim();
+  const once = decodeHtmlEntities(str);
+  const noTags = once.replace(/<[^>]+>/g, " ");
+  return decodeHtmlEntities(noTags).replace(/\s+/g, " ").trim();
 }
 
 function parseGNewsRSS(xml: string): Article[] {
@@ -91,9 +93,13 @@ function parseGNewsRSS(xml: string): Article[] {
     const titleSuffix = new RegExp(`\\s+-\\s+${sourceName}$`);
     title = title.replace(titleSuffix, "").trim();
 
-    const description = rawDescription
-      ? stripHtml(rawDescription).replace(/^[^>]*>/, "").trim() || null
-      : null;
+    let description: string | null = rawDescription ? stripHtml(rawDescription) || null : null;
+    if (description && sourceName) {
+      description = description.replace(new RegExp(`\\s+${sourceName}\\s*$`, "i"), "").trim() || null;
+    }
+    if (description && title && description.slice(0, 60).toLowerCase() === title.slice(0, 60).toLowerCase()) {
+      description = null;
+    }
 
     let publishedAt = new Date().toISOString();
     if (pubDate) {
